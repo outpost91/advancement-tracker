@@ -1,0 +1,7 @@
+{
+  "firebase": {
+    "projectId": "ranger-tracker",
+    "databaseURL": "https://ranger-tracker.firebaseio.com",
+    "storageBucket": "ranger-tracker.appspot.com"
+  }
+}

@@ -1,5 +1,4 @@
 dist/
-!www/favicon.ico
 www/
 
 *~
@@ -18,10 +17,11 @@ log.txt
 .versions/
 node_modules/
 $RECYCLE.BIN/
+functions/node_modules/
+functions/src/breeze-key.json.ts
 
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
 .env
 enjin.*.ts
-!enjin.local.ts

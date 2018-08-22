@@ -17,7 +17,7 @@ exports.config = {
       serviceWorker: {
         swSrc: 'src/sw.js'
       },
-      resourcesUrl: process.argv.indexOf("--cordova") >= 0 ? "build/app" : false
+      resourcesUrl: "build/app"
     }
   ],
   globalStyle: 'src/global/app.css',

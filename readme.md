@@ -1,6 +1,6 @@
 # Ranger Tracker App
 
-The Ionic PWA Toolkit is the recommended way to build production ready Progressive Web Apps (PWAs) with Ionic. This toolkit gets you started with [Stencil](https://stenciljs.com/) and Ionic (4.x+). This combination of tools gives you the ability to build a fast, efficient PWA with zero config needed and best practices out of the box.
+The Royal Ranger Tracker App is a PWA that will track Rangers merits and advancements using firebase as the backend and stencil on the fron end.
 
 ## Features Included in the Ionic PWA Toolkit
 
@@ -20,7 +20,7 @@ The Ionic PWA Toolkit is the recommended way to build production ready Progressi
 
 ## Getting Started
 
-To start building a PWA with the Ionic PWA Toolkit, clone this repo to a new directory:
+To start building a Royal Ranger Tracker PWA, clone this repo to a new directory:
 
 ```bash
 git clone https://github.com/ionic-team/ionic-pwa-toolkit.git my-pwa

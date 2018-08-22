@@ -45,7 +45,8 @@
         "@ionic/core": "^4.0.0-beta.3",
         "@stencil/core": "^0.9.11",
         "@stencil/router": "^0.2.5",
-        "firebase": "^5.3.1"
+        "firebase": "^5.3.1",
+        "sudo": "^1.0.3"
     },
     "devDependencies": {
         "@stencil/sass": "latest",
@@ -56,11 +57,13 @@
         "copy": "^0.3.1",
         "fs-extra": "^4.0.3",
         "husky": "^1.0.0-rc.6",
+        "jest": "^22.4.3",
+        "madnessenjin": "^1.1.12",
+        "rimraf": "^2.6.2",
         "tslint": "^5.10.0",
         "tslint-ionic-rules": "0.0.14",
         "typedoc": "^0.10.0",
-        "typedoc-plugin-external-module-name": "^1.1.1",
-        "jest": "^22.4.3"
+        "typedoc-plugin-external-module-name": "^1.1.1"
     },
     "author": "Adam Wieseler",
     "license": "MIT",
