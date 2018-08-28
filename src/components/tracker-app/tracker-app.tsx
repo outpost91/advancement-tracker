@@ -26,12 +26,12 @@ export class TrackerApp {
   @Prop({ connect: 'ion-toast-controller ' }) toastCtrl: HTMLIonToastControllerElement;
 
   async showToast(isSignedIn: boolean, position: string = 'bottom') {
-    _message: string = 'Signed Out!';
+    _msg: string = 'Signed Out!';
     if(isSignedIn) {
-      _message = 'Welcome Back, ';
+      _msg = 'Welcome Back, ';
     }
     const toast = await this.toastCtrl.create({
-      message: _message,
+      message: _msg,
       duration: 2000,
       position
     });

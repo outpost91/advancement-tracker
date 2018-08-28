@@ -2,10 +2,9 @@ const fs = require('fs-extra');
 const path = require('path');
 const package = require(process.cwd() + '/package.json');
 
-
 if (package.enjin && package.enjin.copy) {
     let destinations = Object.keys(package.enjin.copy);
-
+    
     if (destinations.length > 0) {
         destinations.forEach(dest => {
             let destDir = `${process.cwd()}/${package.enjin.root}/${dest}`;

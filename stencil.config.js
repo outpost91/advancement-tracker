@@ -4,7 +4,7 @@ exports.config = {
   nodeResolve: {
     browser: true
   },
-  enableCache: false,
+  enableCache: true,
   copy: [
     {
       src: "../node_modules/firebase/firebase-*.js",
@@ -17,7 +17,7 @@ exports.config = {
       serviceWorker: {
         swSrc: 'src/sw.js'
       },
-      resourcesUrl: "build/app"
+      resourcesUrl: process.argv.indexOf("--cordova") >= 0 ? "build/app" : false
     }
   ],
   globalStyle: 'src/global/app.css',
