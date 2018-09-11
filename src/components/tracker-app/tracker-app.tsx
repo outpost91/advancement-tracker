@@ -81,14 +81,9 @@ export class TrackerApp {
 
   handleAuthClick(event) {
     event.preventDefault();
-    if(!this.authorized) {
-      console.log('Click event');
-      this.history.push(`/login`, {});
-    } else {
-      this.Auth.logout(); 
-    }
-
+    this.Auth.logout(); 
   }
+  
   render() {
     return (
       <ion-app>
@@ -96,7 +91,10 @@ export class TrackerApp {
           <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
-                <ion-item lines='full' onClick={ (event: UIEvent) => this.handleAuthClick(event)}>
+                {this.authorized
+                  ? <ion-item lines='full' onClick={ (event: UIEvent) => this.handleAuthClick(event)}>
+                  : <ion-item lines='full' href="/login">
+                }
                   <ion-avatar slot="start" >
                     <img src={this.authorized ? this.Auth.isLoggedIn().photoURL : "./build/app/svg/md-contact.svg"} />
                   </ion-avatar>
@@ -104,9 +102,10 @@ export class TrackerApp {
                     {this.authorized
                       ? "Sign Out"
                       : "Sign In"
-                  }
+                    }
                   </ion-label>
                 </ion-item>
+                
                 {this.authorized
                   ? <ion-item href="/planner">Planner</ion-item>
                   : null
@@ -118,7 +117,6 @@ export class TrackerApp {
           </ion-menu>
           <div main id="app-content">
             <stencil-router id="router">
-            <stencil-route-redirect url="/" />
               {this.authorized
                 ? <stencil-route url="/" component="tracker-home" componentProps={this.defaultProps} />
                 : <stencil-route url="/" component="tracker-login" componentProps={this.defaultProps} />
