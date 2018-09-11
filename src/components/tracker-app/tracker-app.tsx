@@ -1,7 +1,7 @@
 import '@ionic/core';
 
 import { Component, Prop, Listen, State } from '@stencil/core';
-import '@stencil/router';
+import { RouterHistory } from '@stencil/router';
 
 import { AuthService } from '../../services/auth';
 import { ConfigService } from '../../services/config';
@@ -16,7 +16,8 @@ export class TrackerApp {
   Auth: AuthService;
   Config: ConfigService;    
   //Database: DatabaseService;
-
+  _msg: string;
+  
   @State() defaultProps: {
     auth?: AuthService,
     db?: DatabaseService
@@ -24,32 +25,33 @@ export class TrackerApp {
   @State() authorized: boolean = false;
     
   @Prop({ connect: 'ion-toast-controller ' }) toastCtrl: HTMLIonToastControllerElement;
+  @Prop() history: RouterHistory;
 
-  async showToast(isSignedIn: boolean, position: string = 'bottom') {
-    _msg: string = 'Signed Out!';
+  async showToast(isSignedIn: boolean, position: 'top' | 'bottom' | 'middle' = 'bottom') {
+    this._msg = 'Signed Out!';
     if(isSignedIn) {
-      _msg = 'Welcome Back, ';
+      this._msg = 'Welcome Back, ';
     }
     const toast = await this.toastCtrl.create({
-      message: _msg,
+      message: this._msg,
       duration: 2000,
       position
     });
 
     toast.present();
-  }
+  };
 
-  // @Listen('window:swUpdate')
-  // async onSWUpdate() {
-  //   const toast:any = await this.toastCtrl.create({
-  //     message: 'New version available',
-  //     showCloseButton: true,
-  //     closeButtonText: 'Reload'
-  //   });
-  //   await toast.present();
-  //   await toast.onWillDismiss()
-  //   window.location.reload();
-  // }
+  @Listen('window:swUpdate')
+  async onSWUpdate() {
+    const toast:any = await this.toastCtrl.create({
+      message: 'New version available',
+      showCloseButton: true,
+      closeButtonText: 'Reload'
+    });
+    await toast.present();
+    await toast.onWillDismiss()
+    window.location.reload();
+  }
 
   componentWillLoad() {
     this.Config = new ConfigService();
@@ -77,9 +79,15 @@ export class TrackerApp {
     ionMenu.close();
   }
 
-  handleSignOutClick(event) {
+  handleAuthClick(event) {
     event.preventDefault();
-    this.Auth.logout(); 
+    if(!this.authorized) {
+      console.log('Click event');
+      this.history.push(`/login`, {});
+    } else {
+      this.Auth.logout(); 
+    }
+
   }
   render() {
     return (
@@ -88,8 +96,8 @@ export class TrackerApp {
           <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
-                <ion-item lines='full'>
-                  <ion-avatar slot="start" onClick={ (event: UIEvent) => this.handleSignOutClick(event)}>
+                <ion-item lines='full' onClick={ (event: UIEvent) => this.handleAuthClick(event)}>
+                  <ion-avatar slot="start" >
                     <img src={this.authorized ? this.Auth.isLoggedIn().photoURL : "./build/app/svg/md-contact.svg"} />
                   </ion-avatar>
                   <ion-label>
@@ -109,11 +117,13 @@ export class TrackerApp {
             </ion-content>
           </ion-menu>
           <div main id="app-content">
-            <stencil-router id="router" useHash={false}>
+            <stencil-router id="router">
+            <stencil-route-redirect url="/" />
               {this.authorized
                 ? <stencil-route url="/" component="tracker-home" componentProps={this.defaultProps} />
                 : <stencil-route url="/" component="tracker-login" componentProps={this.defaultProps} />
               }
+              <stencil-route url="/home" component="tracker-home" componentProps={this.defaultProps} />
               <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
               <stencil-route url="/advancement" component="adv-ranger-list" componentProps={this.defaultProps} />
               {this.authorized
@@ -121,7 +131,7 @@ export class TrackerApp {
                 : null
               }
             </stencil-router>
-            <ion-nav swipeBackEnabled={false} main />
+            <ion-nav swipeGesture={false} main />
           </div>
         </ion-split-pane>
       </ion-app>

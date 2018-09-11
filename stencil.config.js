@@ -1,10 +1,12 @@
+//import { Config } from '@stencil/core';
+//import { sass } from '@stencil/sass';
 const sass = require('@stencil/sass');
 
 exports.config = {
   nodeResolve: {
     browser: true
   },
-  enableCache: true,
+  enableCache: false,
   copy: [
     {
       src: "../node_modules/firebase/firebase-*.js",
@@ -22,7 +24,7 @@ exports.config = {
   ],
   globalStyle: 'src/global/app.css',
   plugins: [
-    sass()
+    sass.sass()
   ]
 };
 
