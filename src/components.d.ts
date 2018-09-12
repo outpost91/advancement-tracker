@@ -46,6 +46,16 @@ export namespace Components {
     'auth'?: AuthService;
   }
 
+  interface TrackerLoginItem {
+    'Auth': AuthService;
+    'authorized': boolean;
+  }
+  interface TrackerLoginItemAttributes extends StencilHTMLAttributes {
+    'Auth'?: AuthService;
+    'authorized'?: boolean;
+    'onAuthClicked'?: (event: CustomEvent) => void;
+  }
+
   interface TrackerLogin {
     'auth': AuthService;
   }
@@ -68,6 +78,7 @@ declare global {
     'AdvRangerList': Components.AdvRangerList;
     'TrackerApp': Components.TrackerApp;
     'TrackerHome': Components.TrackerHome;
+    'TrackerLoginItem': Components.TrackerLoginItem;
     'TrackerLogin': Components.TrackerLogin;
     'TrackerPlanner': Components.TrackerPlanner;
   }
@@ -76,6 +87,7 @@ declare global {
     'adv-ranger-list': Components.AdvRangerListAttributes;
     'tracker-app': Components.TrackerAppAttributes;
     'tracker-home': Components.TrackerHomeAttributes;
+    'tracker-login-item': Components.TrackerLoginItemAttributes;
     'tracker-login': Components.TrackerLoginAttributes;
     'tracker-planner': Components.TrackerPlannerAttributes;
   }
@@ -99,6 +111,12 @@ declare global {
     new (): HTMLTrackerHomeElement;
   };
 
+  interface HTMLTrackerLoginItemElement extends Components.TrackerLoginItem, HTMLStencilElement {}
+  var HTMLTrackerLoginItemElement: {
+    prototype: HTMLTrackerLoginItemElement;
+    new (): HTMLTrackerLoginItemElement;
+  };
+
   interface HTMLTrackerLoginElement extends Components.TrackerLogin, HTMLStencilElement {}
   var HTMLTrackerLoginElement: {
     prototype: HTMLTrackerLoginElement;
@@ -115,6 +133,7 @@ declare global {
     'adv-ranger-list': HTMLAdvRangerListElement
     'tracker-app': HTMLTrackerAppElement
     'tracker-home': HTMLTrackerHomeElement
+    'tracker-login-item': HTMLTrackerLoginItemElement
     'tracker-login': HTMLTrackerLoginElement
     'tracker-planner': HTMLTrackerPlannerElement
   }
@@ -123,6 +142,7 @@ declare global {
     'adv-ranger-list': HTMLAdvRangerListElement;
     'tracker-app': HTMLTrackerAppElement;
     'tracker-home': HTMLTrackerHomeElement;
+    'tracker-login-item': HTMLTrackerLoginItemElement;
     'tracker-login': HTMLTrackerLoginElement;
     'tracker-planner': HTMLTrackerPlannerElement;
   }

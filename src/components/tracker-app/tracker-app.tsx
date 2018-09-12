@@ -91,21 +91,7 @@ export class TrackerApp {
           <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
-                {this.authorized
-                  ? <ion-item lines='full' onClick={ (event: UIEvent) => this.handleAuthClick(event)}>
-                  : <ion-item lines='full' href="/login">
-                }
-                  <ion-avatar slot="start" >
-                    <img src={this.authorized ? this.Auth.isLoggedIn().photoURL : "./build/app/svg/md-contact.svg"} />
-                  </ion-avatar>
-                  <ion-label>
-                    {this.authorized
-                      ? "Sign Out"
-                      : "Sign In"
-                    }
-                  </ion-label>
-                </ion-item>
-                
+                <tracker-login-item authorized={this.authorized} Auth={this.Auth} onAuthClicked={ev => this.handleAuthClick(ev)} ></tracker-login-item>               
                 {this.authorized
                   ? <ion-item href="/planner">Planner</ion-item>
                   : null
@@ -117,11 +103,7 @@ export class TrackerApp {
           </ion-menu>
           <div main id="app-content">
             <stencil-router id="router">
-              {this.authorized
-                ? <stencil-route url="/" component="tracker-home" componentProps={this.defaultProps} />
-                : <stencil-route url="/" component="tracker-login" componentProps={this.defaultProps} />
-              }
-              <stencil-route url="/home" component="tracker-home" componentProps={this.defaultProps} />
+              <stencil-route url={["/home", "/"]} component="tracker-home" componentProps={this.defaultProps} />
               <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
               <stencil-route url="/advancement" component="adv-ranger-list" componentProps={this.defaultProps} />
               {this.authorized

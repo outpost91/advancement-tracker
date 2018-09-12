@@ -1,4 +1,3 @@
-import '@ionic/core';
 import { Component, Prop } from '@stencil/core';
 
 import { AuthService } from '../../services/auth';
@@ -11,6 +10,7 @@ export class AppHome {
   @Prop() auth: AuthService;
 
   componentDidLoad() {
+    console.log("Login Page loaded")
    // ON LOAD
   }
 
@@ -50,7 +50,7 @@ export class AppHome {
 
               <ion-item>
                 <ion-fab horizontal='start' vertical='bottom' edge>
-                  <button ion-fab onClick={(event:UIEvent) => this.login(event, "google")}><ion-icon name="add"></ion-icon></button>
+                  <button ion-fab onClick={(event:UIEvent) => this.login(event, "google")}><ion-icon name="add" /></button>
                 </ion-fab>
               </ion-item>
 
