@@ -1,7 +1,6 @@
 import '@ionic/core';
 
 import { Component, Prop, Listen, State } from '@stencil/core';
-import { RouterHistory } from '@stencil/router';
 
 import { AuthService } from '../../services/auth';
 import { ConfigService } from '../../services/config';
@@ -25,7 +24,6 @@ export class TrackerApp {
   @State() authorized: boolean = false;
     
   @Prop({ connect: 'ion-toast-controller ' }) toastCtrl: HTMLIonToastControllerElement;
-  @Prop() history: RouterHistory;
 
   async showToast(isSignedIn: boolean, position: 'top' | 'bottom' | 'middle' = 'bottom') {
     this._msg = 'Signed Out!';
@@ -101,8 +99,8 @@ export class TrackerApp {
               <ion-toast-controller></ion-toast-controller>
             </ion-content>
           </ion-menu>
-          <div main id="app-content">
-            <stencil-router id="router">
+          <ion-page main id="app-content">
+            <stencil-router>
               <stencil-route url={["/home", "/"]} component="tracker-home" componentProps={this.defaultProps} />
               <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
               <stencil-route url="/advancement" component="adv-ranger-list" componentProps={this.defaultProps} />
@@ -112,7 +110,7 @@ export class TrackerApp {
               }
             </stencil-router>
             <ion-nav swipeGesture={false} main />
-          </div>
+          </ion-page>
         </ion-split-pane>
       </ion-app>
     );
