@@ -14,9 +14,9 @@ export class TrackerHome {
 
   render() {
     return (
-      <ion-content>
+      <ion-page>
         Hello World!
-      </ion-content>
+      </ion-page>
     );
   }
 }
