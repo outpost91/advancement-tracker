@@ -42,6 +42,7 @@ export class DatabaseService {
         })
         .catch( error => {
             console.log(error);
+            
             return 0;
         });
   }

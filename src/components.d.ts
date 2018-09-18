@@ -6,16 +6,17 @@
 
 import '@stencil/core';
 
+
+import '@ionic/core';
 import '@stencil/router';
 import '@stencil/state-tunnel';
-import '@ionic/core';
 import 'ionicons';
 import {
   AuthService,
 } from './services/auth';
 import {
   DatabaseService,
-} from './services/database';
+} from './services/Firestore';
 import {
   RouterHistory,
 } from '@stencil/router';
@@ -25,30 +26,6 @@ import {
 
 
 export namespace Components {
-
-  interface AdvAdventurePage {}
-  interface AdvAdventurePageAttributes extends StencilHTMLAttributes {}
-
-  interface AdvDiscoveryPage {}
-  interface AdvDiscoveryPageAttributes extends StencilHTMLAttributes {}
-
-  interface AdvExpeditionPage {}
-  interface AdvExpeditionPageAttributes extends StencilHTMLAttributes {}
-
-  interface AdvGroupPage {
-    'adventure': boolean | undefined | null;
-    'discovery': boolean | undefined | null;
-    'expedition': boolean | undefined | null;
-    'kids': boolean | undefined | null;
-    'tabTitle': string;
-  }
-  interface AdvGroupPageAttributes extends StencilHTMLAttributes {
-    'adventure'?: boolean | undefined | null;
-    'discovery'?: boolean | undefined | null;
-    'expedition'?: boolean | undefined | null;
-    'kids'?: boolean | undefined | null;
-    'tabTitle'?: string;
-  }
 
   interface AdvGroupTab {
     'adventure': boolean | undefined | null;
@@ -63,19 +40,20 @@ export namespace Components {
     'kids'?: boolean | undefined | null;
   }
 
-  interface AdvKidsPage {}
-  interface AdvKidsPageAttributes extends StencilHTMLAttributes {}
-
   interface AdvRangerGroups {
     'auth': AuthService;
     'db': DatabaseService;
-    'history': RouterHistory;
   }
   interface AdvRangerGroupsAttributes extends StencilHTMLAttributes {
     'auth'?: AuthService;
     'db'?: DatabaseService;
-    'history'?: RouterHistory;
   }
+
+  interface TrackerApp {}
+  interface TrackerAppAttributes extends StencilHTMLAttributes {}
+
+  interface TrackerHome {}
+  interface TrackerHomeAttributes extends StencilHTMLAttributes {}
 
   interface TrackerApp {}
   interface TrackerAppAttributes extends StencilHTMLAttributes {}
@@ -154,12 +132,7 @@ export namespace Components {
 
 declare global {
   interface StencilElementInterfaces {
-    'AdvAdventurePage': Components.AdvAdventurePage;
-    'AdvDiscoveryPage': Components.AdvDiscoveryPage;
-    'AdvExpeditionPage': Components.AdvExpeditionPage;
-    'AdvGroupPage': Components.AdvGroupPage;
     'AdvGroupTab': Components.AdvGroupTab;
-    'AdvKidsPage': Components.AdvKidsPage;
     'AdvRangerGroups': Components.AdvRangerGroups;
     'TrackerApp': Components.TrackerApp;
     'TrackerHome': Components.TrackerHome;
@@ -173,12 +146,7 @@ declare global {
   }
 
   interface StencilIntrinsicElements {
-    'adv-adventure-page': Components.AdvAdventurePageAttributes;
-    'adv-discovery-page': Components.AdvDiscoveryPageAttributes;
-    'adv-expedition-page': Components.AdvExpeditionPageAttributes;
-    'adv-group-page': Components.AdvGroupPageAttributes;
     'adv-group-tab': Components.AdvGroupTabAttributes;
-    'adv-kids-page': Components.AdvKidsPageAttributes;
     'adv-ranger-groups': Components.AdvRangerGroupsAttributes;
     'tracker-app': Components.TrackerAppAttributes;
     'tracker-home': Components.TrackerHomeAttributes;
@@ -192,40 +160,10 @@ declare global {
   }
 
 
-  interface HTMLAdvAdventurePageElement extends Components.AdvAdventurePage, HTMLStencilElement {}
-  var HTMLAdvAdventurePageElement: {
-    prototype: HTMLAdvAdventurePageElement;
-    new (): HTMLAdvAdventurePageElement;
-  };
-
-  interface HTMLAdvDiscoveryPageElement extends Components.AdvDiscoveryPage, HTMLStencilElement {}
-  var HTMLAdvDiscoveryPageElement: {
-    prototype: HTMLAdvDiscoveryPageElement;
-    new (): HTMLAdvDiscoveryPageElement;
-  };
-
-  interface HTMLAdvExpeditionPageElement extends Components.AdvExpeditionPage, HTMLStencilElement {}
-  var HTMLAdvExpeditionPageElement: {
-    prototype: HTMLAdvExpeditionPageElement;
-    new (): HTMLAdvExpeditionPageElement;
-  };
-
-  interface HTMLAdvGroupPageElement extends Components.AdvGroupPage, HTMLStencilElement {}
-  var HTMLAdvGroupPageElement: {
-    prototype: HTMLAdvGroupPageElement;
-    new (): HTMLAdvGroupPageElement;
-  };
-
   interface HTMLAdvGroupTabElement extends Components.AdvGroupTab, HTMLStencilElement {}
   var HTMLAdvGroupTabElement: {
     prototype: HTMLAdvGroupTabElement;
     new (): HTMLAdvGroupTabElement;
-  };
-
-  interface HTMLAdvKidsPageElement extends Components.AdvKidsPage, HTMLStencilElement {}
-  var HTMLAdvKidsPageElement: {
-    prototype: HTMLAdvKidsPageElement;
-    new (): HTMLAdvKidsPageElement;
   };
 
   interface HTMLAdvRangerGroupsElement extends Components.AdvRangerGroups, HTMLStencilElement {}
@@ -289,12 +227,7 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
-    'adv-adventure-page': HTMLAdvAdventurePageElement
-    'adv-discovery-page': HTMLAdvDiscoveryPageElement
-    'adv-expedition-page': HTMLAdvExpeditionPageElement
-    'adv-group-page': HTMLAdvGroupPageElement
     'adv-group-tab': HTMLAdvGroupTabElement
-    'adv-kids-page': HTMLAdvKidsPageElement
     'adv-ranger-groups': HTMLAdvRangerGroupsElement
     'tracker-app': HTMLTrackerAppElement
     'tracker-home': HTMLTrackerHomeElement
@@ -308,12 +241,7 @@ declare global {
   }
 
   interface ElementTagNameMap {
-    'adv-adventure-page': HTMLAdvAdventurePageElement;
-    'adv-discovery-page': HTMLAdvDiscoveryPageElement;
-    'adv-expedition-page': HTMLAdvExpeditionPageElement;
-    'adv-group-page': HTMLAdvGroupPageElement;
     'adv-group-tab': HTMLAdvGroupTabElement;
-    'adv-kids-page': HTMLAdvKidsPageElement;
     'adv-ranger-groups': HTMLAdvRangerGroupsElement;
     'tracker-app': HTMLTrackerAppElement;
     'tracker-home': HTMLTrackerHomeElement;

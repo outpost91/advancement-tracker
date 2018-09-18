@@ -11,6 +11,7 @@ export class TrackerLogin {
   @Prop() auth: AuthService;
 
   private login(event, type: string = 'email') {
+
     event.preventDefault();
 
     if(type === 'email') {
