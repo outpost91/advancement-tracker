@@ -10,9 +10,13 @@
 declare var firebase: any;
 
 export class AuthService {
-  // public service: firebase.auth.Auth;
   public service: any;
   public session: any;
+  public fetch_options: {
+      method: string;
+      headers: { 'Authorization': string };
+      mode: string;
+  };
 
   constructor(
     // private facebook: Facebook,
@@ -89,6 +93,14 @@ export class AuthService {
       if (session) {
         localStorage.setItem('tmg:session', JSON.stringify(session));
       }
+      session.getIdToken()
+        .then( (token: string) => {
+          this.fetch_options.headers.Authorization = 'Bearer ' + token;
+        })
+        .catch( e => {
+          console.log(e)
+        })
+
       if (callback && typeof callback === 'function') {
         callback(session);
       }

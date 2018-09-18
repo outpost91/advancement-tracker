@@ -1,22 +1,19 @@
-import { Component, Prop } from '@stencil/core';
-import { AuthService } from '../../services/auth';
+import { Component } from '@stencil/core';
 
 @Component({
   tag: 'tracker-home',
   styleUrl: 'tracker-home.scss'
 })
 export class TrackerHome {
-  @Prop() auth: AuthService;
-
-  componentDidLoad() {
-   // ON LOAD
+  componentWillLoad() {
+    console.log("Hello World");
   }
 
   render() {
     return (
-      <ion-page>
-        Hello World!
-      </ion-page>
+      <ion-content>
+        Your new tracker-home component
+      </ion-content>
     );
   }
 }

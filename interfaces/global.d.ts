@@ -1,7 +1,7 @@
 import * as firebase from "firebase";
 
 declare global {
-  namespace MadnessLabs {
+  namespace AdvancementTracker {
 
     namespace User {
       export interface ISession extends firebase.User {}

@@ -23,7 +23,7 @@ export class TrackerLoginItem {
                                         ? null 
                                         : "/login"}>
         <ion-avatar slot="start" >
-          <img src={this.authorized ? this.Auth.isLoggedIn().photoURL : "./build/app/svg/md-contact.svg"} />
+          <img src={(this.authorized && this.Auth.isLoggedIn().photoURL) ? this.Auth.isLoggedIn().photoURL : "./build/app/svg/md-contact.svg"} />
         </ion-avatar>
         <ion-label>
           {this.authorized

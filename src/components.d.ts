@@ -7,44 +7,46 @@
 import '@stencil/core';
 
 import '@ionic/core';
-import 'ionicons';
 import '@stencil/router';
 import '@stencil/state-tunnel';
+import 'ionicons';
 import {
   AuthService,
 } from './services/auth';
 import {
   DatabaseService,
 } from './services/database';
-import {
-  RouterHistory,
-} from '@stencil/router';
 
 
 export namespace Components {
 
-  interface AdvRangerList {
+  interface AdvGroupTab {
+    'adventure': boolean | undefined | null;
+    'discovery': boolean | undefined | null;
+    'expedition': boolean | undefined | null;
+    'kids': boolean | undefined | null;
+  }
+  interface AdvGroupTabAttributes extends StencilHTMLAttributes {
+    'adventure'?: boolean | undefined | null;
+    'discovery'?: boolean | undefined | null;
+    'expedition'?: boolean | undefined | null;
+    'kids'?: boolean | undefined | null;
+  }
+
+  interface AdvRangerGroups {
     'auth': AuthService;
     'db': DatabaseService;
   }
-  interface AdvRangerListAttributes extends StencilHTMLAttributes {
+  interface AdvRangerGroupsAttributes extends StencilHTMLAttributes {
     'auth'?: AuthService;
     'db'?: DatabaseService;
   }
 
-  interface TrackerApp {
-    'history': RouterHistory;
-  }
-  interface TrackerAppAttributes extends StencilHTMLAttributes {
-    'history'?: RouterHistory;
-  }
+  interface TrackerApp {}
+  interface TrackerAppAttributes extends StencilHTMLAttributes {}
 
-  interface TrackerHome {
-    'auth': AuthService;
-  }
-  interface TrackerHomeAttributes extends StencilHTMLAttributes {
-    'auth'?: AuthService;
-  }
+  interface TrackerHome {}
+  interface TrackerHomeAttributes extends StencilHTMLAttributes {}
 
   interface TrackerLoginItem {
     'Auth': AuthService;
@@ -75,7 +77,8 @@ export namespace Components {
 
 declare global {
   interface StencilElementInterfaces {
-    'AdvRangerList': Components.AdvRangerList;
+    'AdvGroupTab': Components.AdvGroupTab;
+    'AdvRangerGroups': Components.AdvRangerGroups;
     'TrackerApp': Components.TrackerApp;
     'TrackerHome': Components.TrackerHome;
     'TrackerLoginItem': Components.TrackerLoginItem;
@@ -84,7 +87,8 @@ declare global {
   }
 
   interface StencilIntrinsicElements {
-    'adv-ranger-list': Components.AdvRangerListAttributes;
+    'adv-group-tab': Components.AdvGroupTabAttributes;
+    'adv-ranger-groups': Components.AdvRangerGroupsAttributes;
     'tracker-app': Components.TrackerAppAttributes;
     'tracker-home': Components.TrackerHomeAttributes;
     'tracker-login-item': Components.TrackerLoginItemAttributes;
@@ -93,10 +97,16 @@ declare global {
   }
 
 
-  interface HTMLAdvRangerListElement extends Components.AdvRangerList, HTMLStencilElement {}
-  var HTMLAdvRangerListElement: {
-    prototype: HTMLAdvRangerListElement;
-    new (): HTMLAdvRangerListElement;
+  interface HTMLAdvGroupTabElement extends Components.AdvGroupTab, HTMLStencilElement {}
+  var HTMLAdvGroupTabElement: {
+    prototype: HTMLAdvGroupTabElement;
+    new (): HTMLAdvGroupTabElement;
+  };
+
+  interface HTMLAdvRangerGroupsElement extends Components.AdvRangerGroups, HTMLStencilElement {}
+  var HTMLAdvRangerGroupsElement: {
+    prototype: HTMLAdvRangerGroupsElement;
+    new (): HTMLAdvRangerGroupsElement;
   };
 
   interface HTMLTrackerAppElement extends Components.TrackerApp, HTMLStencilElement {}
@@ -130,7 +140,8 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
-    'adv-ranger-list': HTMLAdvRangerListElement
+    'adv-group-tab': HTMLAdvGroupTabElement
+    'adv-ranger-groups': HTMLAdvRangerGroupsElement
     'tracker-app': HTMLTrackerAppElement
     'tracker-home': HTMLTrackerHomeElement
     'tracker-login-item': HTMLTrackerLoginItemElement
@@ -139,7 +150,8 @@ declare global {
   }
 
   interface ElementTagNameMap {
-    'adv-ranger-list': HTMLAdvRangerListElement;
+    'adv-group-tab': HTMLAdvGroupTabElement;
+    'adv-ranger-groups': HTMLAdvRangerGroupsElement;
     'tracker-app': HTMLTrackerAppElement;
     'tracker-home': HTMLTrackerHomeElement;
     'tracker-login-item': HTMLTrackerLoginItemElement;
