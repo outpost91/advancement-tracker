@@ -1,6 +1,7 @@
 import '@ionic/core';
 
-import { Component, Prop, Listen, State } from '@stencil/core';
+import { Component, Element, Listen, Prop, State } from '@stencil/core';
+import '@stencil/router';
 
 import { AuthService } from '../../services/auth';
 import { ConfigService } from '../../services/config';
@@ -13,23 +14,30 @@ import { DatabaseService } from '../../services/database';
 export class TrackerApp {
 
   Auth: AuthService;
-  Config: ConfigService;    
-  //Database: DatabaseService;
+  Config: ConfigService;
+  Database: DatabaseService;
   _msg: string;
-  
+
+  @Element() el: HTMLTrackerAppElement;
+
+  @Prop({ connect: 'ion-toast-controller' }) toastCtrl: HTMLIonToastControllerElement;
+
   @State() defaultProps: {
     auth?: AuthService,
     db?: DatabaseService
   };
-  @State() authorized: boolean = false;
-    
-  @Prop({ connect: 'ion-toast-controller ' }) toastCtrl: HTMLIonToastControllerElement;
+  @State() authorized = false;
 
   async showToast(isSignedIn: boolean, position: 'top' | 'bottom' | 'middle' = 'bottom') {
     this._msg = 'Signed Out!';
-    if(isSignedIn) {
-      this._msg = 'Welcome Back, ';
+    if (isSignedIn) {
+      this._msg = 'Welcome Back';
     }
+
+    if (this.Auth.isLoggedIn().displayName !== '') {
+      this._msg = this._msg.concat(', ', this.Auth.isLoggedIn().displayName);
+    }
+
     const toast = await this.toastCtrl.create({
       message: this._msg,
       duration: 2000,
@@ -37,39 +45,36 @@ export class TrackerApp {
     });
 
     toast.present();
-  };
+  }
 
   @Listen('window:swUpdate')
   async onSWUpdate() {
-    const toast:any = await this.toastCtrl.create({
+    const toast: any = await this.toastCtrl.create({
       message: 'New version available',
       showCloseButton: true,
       closeButtonText: 'Reload'
     });
     await toast.present();
-    await toast.onWillDismiss()
+    await toast.onWillDismiss();
     window.location.reload();
   }
 
   componentWillLoad() {
     this.Config = new ConfigService();
     this.Auth = new AuthService(this.Config.get('firebase'));
-    //this.Database = new DatabaseService();
-    
-    this.defaultProps = {
-      auth: this.Auth//,
-      //db: this.Database
-    };
-    
-    this.Auth.onAuthChanged(data => {
-      this.authorized = (data != null);
-      this.showToast(this.authorized);
-    })
-  }
+    // this.Database = new DatabaseService();
 
-  @Listen('body:ionToastWillDismiss')
-  reload() {
-    window.location.reload();
+    this.defaultProps = {
+      auth: this.Auth// ,
+      // db: this.Database
+    };
+
+    this.Auth.onAuthChanged(data => {
+      if (this.authorized !== (data != null)) {
+        this.authorized = (data != null);
+        this.showToast(this.authorized);
+      }
+    });
   }
 
   closeMenu() {
@@ -77,42 +82,68 @@ export class TrackerApp {
     ionMenu.close();
   }
 
-  handleAuthClick(event) {
+  handleLogoutClick(event) {
     event.preventDefault();
-    this.Auth.logout(); 
+
+    console.log('Logout Clicked');
+    this.Auth.logout();
+    this.authorized = false;
   }
-  
+
   render() {
-    return (
+    return ([
       <ion-app>
         <ion-split-pane when="lg">
           <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
-                <tracker-login-item authorized={this.authorized} Auth={this.Auth} onAuthClicked={ev => this.handleAuthClick(ev)} ></tracker-login-item>               
+                <tracker-login-item authorized={this.authorized} Auth={this.Auth} onAuthClicked={ev => this.handleLogoutClick(ev)} ></tracker-login-item>
                 {this.authorized
                   ? <ion-item href="/planner">Planner</ion-item>
                   : null
                 }
                 <ion-item href="/advancement">Advancement</ion-item>
               </ion-list>
-              <ion-toast-controller></ion-toast-controller>
             </ion-content>
           </ion-menu>
-          <ion-page main id="app-content">
+          <ion-page class="ion-page" id="app-content" main>
             <stencil-router>
-              <stencil-route url={["/home", "/"]} component="tracker-home" componentProps={this.defaultProps} />
-              <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
-              <stencil-route url="/advancement" component="adv-ranger-list" componentProps={this.defaultProps} />
-              {this.authorized
-                ? <stencil-route url="/planner" component="tracker-planner" componentProps={this.defaultProps} />
-                : null
-              }
+              <stencil-route-switch scrollTopOffset={0}>
+                {this.authorized
+                  ? <stencil-route url="/" component="tracker-home" componentProps={this.defaultProps} exact={true} />
+                  : <stencil-route url="/" component="tracker-login" componentProps={this.defaultProps} exact={true} />
+                }
+                <stencil-route url="/home" component="tracker-home" componentProps={this.defaultProps} />
+                <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
+                <stencil-route url="/advancement" component="adv-ranger-groups" componentProps={this.defaultProps} />
+                {this.authorized
+                  ? <stencil-route url="/planner" component="tracker-planner" componentProps={this.defaultProps} />
+                  : null
+                }
+                {this.authorized
+                  ? <stencil-route url="/advancement/kids" component="adv-kids-page" componentProps={this.defaultProps} />
+                  : null
+                }
+                {this.authorized
+                  ? <stencil-route url="/advancement/discovery" component="adv-discovery-page" componentProps={this.defaultProps} />
+                  : null
+                }
+                {this.authorized
+                  ? <stencil-route url="/advancement/adventure" component="adv-adventure-page" componentProps={this.defaultProps} />
+                  : null
+                }
+                {this.authorized
+                  ? <stencil-route url="/advancement/expedition" component="adv-expedition-page" componentProps={this.defaultProps} />
+                  : null
+                }
+
+                <stencil-route component="tracker-home" componentProps={this.defaultProps} />
+              </stencil-route-switch>
             </stencil-router>
-            <ion-nav swipeGesture={false} main />
           </ion-page>
         </ion-split-pane>
-      </ion-app>
-    );
+      </ion-app>,
+      <ion-toast-controller></ion-toast-controller>
+    ]);
   }
 }
