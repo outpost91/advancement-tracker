@@ -1,7 +1,7 @@
 import { Component, Prop } from '@stencil/core';
 
 import { AuthService } from '../../services/auth';
-import { DatabaseService } from '../../services/database';
+import { DatabaseService } from '../../services/Firestore';
 
 @Component({
   tag: 'adv-ranger-groups',

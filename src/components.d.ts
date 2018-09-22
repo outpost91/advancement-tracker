@@ -7,15 +7,15 @@
 import '@stencil/core';
 
 import '@ionic/core';
+import 'ionicons';
 import '@stencil/router';
 import '@stencil/state-tunnel';
-import 'ionicons';
 import {
   AuthService,
 } from './services/auth';
 import {
   DatabaseService,
-} from './services/database';
+} from './services/Firestore';
 
 
 export namespace Components {
