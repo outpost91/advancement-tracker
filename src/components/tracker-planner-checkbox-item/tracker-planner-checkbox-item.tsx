@@ -14,7 +14,7 @@ export class TrackerPlannerCheckboxItem {
 
   componentWillUpdate() {
     console.log(this.items);
-    this._items = this.items;
+    this._items = this.items;    
   }
 
   render() {
@@ -22,12 +22,7 @@ export class TrackerPlannerCheckboxItem {
       <ion-item>
         <ion-label>{this.label}</ion-label>
       </ion-item>,
-      this._items.map(element => {
-        <ion-item>
-          <ion-label>{element.value}</ion-label>
-            <ion-checkbox slot="end" id={element.id} value={element.value} />
-        </ion-item>
-      })
+      this._items.map(element => <ion-item><ion-label>{element.value}</ion-label><ion-checkbox slot="start" id={element.id} value={element.value} /></ion-item>)
     ])
   }
 }

@@ -8,16 +8,16 @@ import { DatabaseService } from '../../services/Database';
   styleUrl: 'tracker-planner.scss'
 })
 export class TrackerPlanner {
-
-  _merits: any = [];
-
   @Prop() auth: AuthService;
   @Prop() db?: DatabaseService;
 
-  @State() merits: any = [];
+  @State() bible: any = [];
+  @State() bibleRequirementLabel: string;
+  @State() bibleRequirements: any = [];
   @State() groupValue: string;
-  @State() requirements: any = [];
-  @State() avOptions: any[];
+  @State() meritRequirementLabel: string;
+  @State() meritRequirements: any = [];
+  @State() merits: any = [];
   
   handleSubmit(event) {
     event.preventDefault();
@@ -47,18 +47,41 @@ export class TrackerPlanner {
     this.db.merits(event.detail.value).then(value => {
       this.merits = value;
     })
+    if (this.groupValue !== 'Ranger Kids') {
+      //this.db.bibles(event.detail.value).then(value => {
+      //  this.merits = value;
+      //})
+    }
   }
 
   @Listen('trackerSelectChange')
   onTrackerSelectChange(event: CustomEvent) {
     if (event.detail.id === 'merit-id') {
+      this.meritRequirementLabel = event.detail.text;
       this.db.requirements(event.detail.value).then(value => {
+        // Clear out exsiting array
+        this.meritRequirements = [];
+        
+        // build current array
         for (let index = 0; index < value; index++) {
-          this.requirements = [...this.requirements, {id: index+1, value: "Requirement " + (index+1)}]; 
+          this.meritRequirements = [...this.meritRequirements, {id: index+1, value: "Requirement " + (index+1)}]; 
+        }
+      })
+    }
+    if (event.detail.id === 'bible-id') {
+      this.bibleRequirementLabel = event.detail.text;
+      this.db.requirements(event.detail.value).then(value => {
+        // Clear out exsiting array
+        this.bibleRequirements = [];
+        
+        // build current array
+        for (let index = 0; index < value; index++) {
+          this.bibleRequirements = [...this.bibleRequirements, {id: index+1, value: "Requirement " + (index+1)}]; 
         }
       })
     }
   }
+
 /*  handleSecondSelect(event) {
   console.log(event.target.value);
     this.secondSelectValue = event.target.value;
@@ -242,11 +265,19 @@ export class TrackerPlanner {
             <ion-list lines="none">
               <tracker-planner-date-item id="date" />
               <tracker-planner-segment-item id="group-id" items={['one', 'two', 'three']} />
-              <tracker-planner-select-item id="merit-id" items={this.merits} label="Merits" />
-              <tracker-planner-checkbox-item id="merit-requirements" items={this.requirements} label="Requirements" />
+              <tracker-planner-select-item id="merit-id" items={this.merits} label="Merit Lesson" />
+              <tracker-planner-checkbox-item id="merit-requirements" items={this.meritRequirements} label={(this.meritRequirementLabel !== '' && this.meritRequirementLabel !== undefined) ? this.meritRequirementLabel + " Requirements:" : "Requirements"} />
+              {(this.groupValue !== 'Ranger Kids')
+                ? <tracker-planner-select-item id="bible-id" items={this.bible} label="Bible Lesson" />
+                : null
+              }
+              {(this.groupValue !== 'Ranger Kids')
+                ? <tracker-planner-checkbox-item id="bible-requirements" items={this.bibleRequirements} label={(this.bibleRequirementLabel !== '' && this.bibleRequirementLabel !== undefined) ? this.bibleRequirementLabel + " Requirements:" : "Requirements"} />
+                : null
+              }
               <tracker-planner-checkbox-item id="attendance" items={0} label="Attendance" />
               <ion-item>
-                <ion-button type="submit">Submit</ion-button>
+                <ion-button type="submit" slot="end">Submit</ion-button>
               </ion-item>
             </ion-list>
           </form>
