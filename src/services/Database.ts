@@ -15,6 +15,37 @@ export class DatabaseService {
     this.options = options;
   }
 
+  public async merits(group: string) {
+    const data = [];
+
+    await this.service.child('merits').orderByChild('name')
+        .once('value')
+        .then( snapshot => {
+            snapshot.forEach( childsnap => {
+                if (childsnap.child('group').val() === group) {
+                    data.push({ value: childsnap.child('name').val(), key: childsnap.key });
+                }
+            })
+        })
+    
+    return data;
+  }
+
+  public async requirements(key: string) {
+    return await this.service.child('merits/' + key)
+        .once("value")
+        .then(snapshot => {
+            if( snapshot.hasChild('num-reqs')
+            && snapshot.child('num-reqs').val() ) {
+                return parseInt(snapshot.child('num-reqs').val());
+            }
+        })
+        .catch( error => {
+            console.error(error);
+            return 0;
+        });
+  }
+
   public async all(collectionName: string): Promise<any> {
     const collection = await this.get(collectionName);
     const data = {};

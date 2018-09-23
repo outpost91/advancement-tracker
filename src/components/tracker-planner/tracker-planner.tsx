@@ -1,7 +1,7 @@
 import { Component, Listen, Prop, State } from '@stencil/core';
 
 import { AuthService } from '../../services/auth';
-import { DatabaseService } from '../../services/Firestore';
+import { DatabaseService } from '../../services/Database';
 
 @Component({
   tag: 'tracker-planner',
@@ -14,34 +14,53 @@ export class TrackerPlanner {
   @Prop() auth: AuthService;
   @Prop() db?: DatabaseService;
 
-  @State() value: string;
-  @State() selectValue: string;
-  @State() secondSelectValue: string;
+  @State() merits: any = [];
+  @State() groupValue: string;
+  @State() requirements: any = [];
   @State() avOptions: any[];
-
+  
   handleSubmit(event) {
     event.preventDefault();
     
     console.log(event.target.value);
-    console.log(this.value);
+    // console.log(this.value);
   }
 
   handleChange(event) {
-    this.value = event.target.value;
+    // this.value = event.target.value;
 
     if (event.target.validity.typeMismatch) {
       console.log('this element is not valid')
     }
   }
 
-  @Listen('ionChange')
-  onIonChange(event: CustomEvent) {
-    console.log(event.target.value);
-    this.selectValue = event.target.value;
+  //@Listen('ionChange')
+  //onIonChange(event: CustomEvent) {
+  //  console.log("Event emitted")
+  //  console.log(event.detail);
+  //  this.selectValue = event.target.value;
+  //}
+
+  @Listen('trackerSegmentChange')
+  onTrackerSegmentChange(event: CustomEvent) {
+    this.groupValue = event.detail.value;
+    this.db.merits(event.detail.value).then(value => {
+      this.merits = value;
+    })
   }
 
-  handleSecondSelect(event) {
-    console.log(event.target.value);
+  @Listen('trackerSelectChange')
+  onTrackerSelectChange(event: CustomEvent) {
+    if (event.detail.id === 'merit-id') {
+      this.db.requirements(event.detail.value).then(value => {
+        for (let index = 0; index < value; index++) {
+          this.requirements = [...this.requirements, {id: index+1, value: "Requirement " + (index+1)}]; 
+        }
+      })
+    }
+  }
+/*  handleSecondSelect(event) {
+  console.log(event.target.value);
     this.secondSelectValue = event.target.value;
   }
 
@@ -53,7 +72,7 @@ export class TrackerPlanner {
       <label for="checkbox-requirement-0">Requirement 1</label>
     </span>
     */
-    let span = document.createElement('SPAN');
+/*    let span = document.createElement('SPAN');
     span.setAttribute("class", "form-radio-container");
           
     let input = document.createElement('INPUT');
@@ -210,7 +229,7 @@ export class TrackerPlanner {
       }
     });
   }
-  
+  */
 
   render() {
     return (
@@ -221,37 +240,13 @@ export class TrackerPlanner {
         <ion-content>
           <form onSubmit={(e) => this.handleSubmit(e)}>
             <ion-list lines="none">
+              <tracker-planner-date-item id="date" />
+              <tracker-planner-segment-item id="group-id" items={['one', 'two', 'three']} />
+              <tracker-planner-select-item id="merit-id" items={this.merits} label="Merits" />
+              <tracker-planner-checkbox-item id="merit-requirements" items={this.requirements} label="Requirements" />
+              <tracker-planner-checkbox-item id="attendance" items={0} label="Attendance" />
               <ion-item>
-                <ion-label position="floating">Ranger Meeting</ion-label>
-                <ion-datetime display-format="DDDD MMMM D YYYY" picker-format="MMMM D YYYY"></ion-datetime>
-              </ion-item>
-              <ion-item>
-                <ion-segment>
-                  <ion-segment-button value="kids">
-                    Ranger Kids
-                  </ion-segment-button>
-                  <ion-segment-button value="discovery">
-                    Discovery
-                  </ion-segment-button>
-                  <ion-segment-button value="Adventure">
-                    Adventure
-                  </ion-segment-button>
-                  <ion-segment-button value="Expedition">
-                    Expedition
-                  </ion-segment-button>
-                </ion-segment>
-              </ion-item>
-              <ion-item>
-              <ion-label>Bible Merit</ion-label>
-                <ion-select id="merit" interface="action-sheet" placeholder="Select One">
-                  <ion-select-option value={null}></ion-select-option>
-                  {this._merits.array.forEach(element => {
-                    <ion-select-option value={element}>{element}</ion-select-option>
-                  })}
-                </ion-select>
-              </ion-item>
-              <ion-item>
-                <ion-button size="large" type="submit">Submit</ion-button>
+                <ion-button type="submit">Submit</ion-button>
               </ion-item>
             </ion-list>
           </form>

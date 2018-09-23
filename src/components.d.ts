@@ -7,15 +7,18 @@
 import '@stencil/core';
 
 import '@ionic/core';
-import 'ionicons';
 import '@stencil/router';
 import '@stencil/state-tunnel';
+import 'ionicons';
 import {
   AuthService,
 } from './services/auth';
 import {
   DatabaseService,
 } from './services/Firestore';
+import {
+  DatabaseService as DatabaseService2,
+} from './services/Database';
 
 
 export namespace Components {
@@ -65,6 +68,48 @@ export namespace Components {
     'auth'?: AuthService;
   }
 
+  interface TrackerPlannerCheckboxItem {
+    'id': string | null;
+    'items': any;
+    'label': string;
+  }
+  interface TrackerPlannerCheckboxItemAttributes extends StencilHTMLAttributes {
+    'id'?: string | null;
+    'items'?: any;
+    'label'?: string;
+  }
+
+  interface TrackerPlannerDateItem {
+    'id': string;
+    'label': string;
+  }
+  interface TrackerPlannerDateItemAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'label'?: string;
+  }
+
+  interface TrackerPlannerSegmentItem {
+    'id': string;
+    'items': any;
+  }
+  interface TrackerPlannerSegmentItemAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'items'?: any;
+    'onTrackerSegmentChange'?: (event: CustomEvent) => void;
+  }
+
+  interface TrackerPlannerSelectItem {
+    'id': string;
+    'items': any;
+    'label': string;
+  }
+  interface TrackerPlannerSelectItemAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'items'?: any;
+    'label'?: string;
+    'onTrackerSelectChange'?: (event: CustomEvent) => void;
+  }
+
   interface TrackerPlanner {
     'auth': AuthService;
     'db': DatabaseService;
@@ -83,6 +128,10 @@ declare global {
     'TrackerHome': Components.TrackerHome;
     'TrackerLoginItem': Components.TrackerLoginItem;
     'TrackerLogin': Components.TrackerLogin;
+    'TrackerPlannerCheckboxItem': Components.TrackerPlannerCheckboxItem;
+    'TrackerPlannerDateItem': Components.TrackerPlannerDateItem;
+    'TrackerPlannerSegmentItem': Components.TrackerPlannerSegmentItem;
+    'TrackerPlannerSelectItem': Components.TrackerPlannerSelectItem;
     'TrackerPlanner': Components.TrackerPlanner;
   }
 
@@ -93,6 +142,10 @@ declare global {
     'tracker-home': Components.TrackerHomeAttributes;
     'tracker-login-item': Components.TrackerLoginItemAttributes;
     'tracker-login': Components.TrackerLoginAttributes;
+    'tracker-planner-checkbox-item': Components.TrackerPlannerCheckboxItemAttributes;
+    'tracker-planner-date-item': Components.TrackerPlannerDateItemAttributes;
+    'tracker-planner-segment-item': Components.TrackerPlannerSegmentItemAttributes;
+    'tracker-planner-select-item': Components.TrackerPlannerSelectItemAttributes;
     'tracker-planner': Components.TrackerPlannerAttributes;
   }
 
@@ -133,6 +186,30 @@ declare global {
     new (): HTMLTrackerLoginElement;
   };
 
+  interface HTMLTrackerPlannerCheckboxItemElement extends Components.TrackerPlannerCheckboxItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerCheckboxItemElement: {
+    prototype: HTMLTrackerPlannerCheckboxItemElement;
+    new (): HTMLTrackerPlannerCheckboxItemElement;
+  };
+
+  interface HTMLTrackerPlannerDateItemElement extends Components.TrackerPlannerDateItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerDateItemElement: {
+    prototype: HTMLTrackerPlannerDateItemElement;
+    new (): HTMLTrackerPlannerDateItemElement;
+  };
+
+  interface HTMLTrackerPlannerSegmentItemElement extends Components.TrackerPlannerSegmentItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerSegmentItemElement: {
+    prototype: HTMLTrackerPlannerSegmentItemElement;
+    new (): HTMLTrackerPlannerSegmentItemElement;
+  };
+
+  interface HTMLTrackerPlannerSelectItemElement extends Components.TrackerPlannerSelectItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerSelectItemElement: {
+    prototype: HTMLTrackerPlannerSelectItemElement;
+    new (): HTMLTrackerPlannerSelectItemElement;
+  };
+
   interface HTMLTrackerPlannerElement extends Components.TrackerPlanner, HTMLStencilElement {}
   var HTMLTrackerPlannerElement: {
     prototype: HTMLTrackerPlannerElement;
@@ -146,6 +223,10 @@ declare global {
     'tracker-home': HTMLTrackerHomeElement
     'tracker-login-item': HTMLTrackerLoginItemElement
     'tracker-login': HTMLTrackerLoginElement
+    'tracker-planner-checkbox-item': HTMLTrackerPlannerCheckboxItemElement
+    'tracker-planner-date-item': HTMLTrackerPlannerDateItemElement
+    'tracker-planner-segment-item': HTMLTrackerPlannerSegmentItemElement
+    'tracker-planner-select-item': HTMLTrackerPlannerSelectItemElement
     'tracker-planner': HTMLTrackerPlannerElement
   }
 
@@ -156,6 +237,10 @@ declare global {
     'tracker-home': HTMLTrackerHomeElement;
     'tracker-login-item': HTMLTrackerLoginItemElement;
     'tracker-login': HTMLTrackerLoginElement;
+    'tracker-planner-checkbox-item': HTMLTrackerPlannerCheckboxItemElement;
+    'tracker-planner-date-item': HTMLTrackerPlannerDateItemElement;
+    'tracker-planner-segment-item': HTMLTrackerPlannerSegmentItemElement;
+    'tracker-planner-select-item': HTMLTrackerPlannerSelectItemElement;
     'tracker-planner': HTMLTrackerPlannerElement;
   }
 
