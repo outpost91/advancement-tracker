@@ -93,16 +93,16 @@ export class TrackerApp {
   render() {
     return ([
       <ion-app>
-        <ion-split-pane when='lg'>
-          <ion-menu content-id='app-content'>
+        <ion-split-pane when="lg">
+          <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
                 <tracker-login-item authorized={this.authorized} Auth={this.Auth} onAuthClicked={ev => this.handleLogoutClick(ev)} ></tracker-login-item>
                 {this.authorized
-                  ? <ion-item href='/planner'>Planner</ion-item>
+                  ? <ion-item href="/planner">Planner</ion-item>
                   : null
                 }
-                <ion-item href='/advancement'>Advancement</ion-item>
+                <ion-item href="/advancement">Advancement</ion-item>
               </ion-list>
             </ion-content>
           </ion-menu>
@@ -117,7 +117,7 @@ export class TrackerApp {
                 <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
                 <stencil-route url="/advancement" component="adv-ranger-groups" componentProps={this.defaultProps} />
                 {this.authorized
-                  ? <stencil-route url='/planner' component='tracker-planner' componentProps={this.defaultProps} />
+                  ? <stencil-route url="/planner" component="tracker-planner" componentProps={this.defaultProps} />
                   : null
                 }
                 {this.authorized
