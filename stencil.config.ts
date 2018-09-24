@@ -1,12 +1,11 @@
-//import { Config } from '@stencil/core';
-//import { sass } from '@stencil/sass';
-const sass = require('@stencil/sass');
+import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
 
 exports.config = {
   nodeResolve: {
     browser: true
   },
-  enableCache: false,
+  enableCache: true,
   copy: [
     {
       src: "../node_modules/firebase/firebase-*.js",
@@ -16,6 +15,9 @@ exports.config = {
   outputTargets: [
     {
       type: 'www',
+      prerenderLocations: [
+        { path: '/login' }
+       ],
       serviceWorker: {
         swSrc: 'src/sw.js'
       },
@@ -24,7 +26,7 @@ exports.config = {
   ],
   globalStyle: 'src/global/app.css',
   plugins: [
-    sass.sass()
+    sass()
   ]
 };
 

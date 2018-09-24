@@ -62,11 +62,11 @@ export class TrackerApp {
   componentWillLoad() {
     this.Config = new ConfigService();
     this.Auth = new AuthService(this.Config.get('firebase'));
-    // this.Database = new DatabaseService();
+    this.Database = new DatabaseService();
 
     this.defaultProps = {
-      auth: this.Auth// ,
-      // db: this.Database
+      auth: this.Auth,
+      db: this.Database
     };
 
     this.Auth.onAuthChanged(data => {
@@ -74,6 +74,7 @@ export class TrackerApp {
         this.authorized = (data != null);
         this.showToast(this.authorized);
       }
+      this.Database.fetch_options(this.Auth.fetch_options);
     });
   }
 
@@ -85,7 +86,6 @@ export class TrackerApp {
   handleLogoutClick(event) {
     event.preventDefault();
 
-    console.log('Logout Clicked');
     this.Auth.logout();
     this.authorized = false;
   }
@@ -136,7 +136,6 @@ export class TrackerApp {
                   ? <stencil-route url="/advancement/expedition" component="adv-expedition-page" componentProps={this.defaultProps} />
                   : null
                 }
-
                 <stencil-route component="tracker-home" componentProps={this.defaultProps} />
               </stencil-route-switch>
             </stencil-router>

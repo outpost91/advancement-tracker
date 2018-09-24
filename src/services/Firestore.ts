@@ -5,45 +5,21 @@ declare var firebase: any;
 export class DatabaseService {
   public service: any;
   public watchers: any = {};
-  public options: any;
 
   public constructor() {
-    this.service = firebase.database().ref();
-  }
-
-  public fetch_options(options: any) {
-    this.options = options;
-  }
-
-  public async merits(group: string) {
-    const data = [];
-
-    await this.service.child('merits').orderByChild('name')
-        .once('value')
-        .then( snapshot => {
-            snapshot.forEach( childsnap => {
-                if (childsnap.child('group').val() === group) {
-                    data.push({ value: childsnap.child('name').val(), key: childsnap.key });
-                }
-            })
-        })
-    
-    return data;
-  }
-
-  public async requirements(key: string) {
-    return await this.service.child('merits/' + key)
-        .once("value")
-        .then(snapshot => {
-            if( snapshot.hasChild('num-reqs')
-            && snapshot.child('num-reqs').val() ) {
-                return parseInt(snapshot.child('num-reqs').val());
-            }
-        })
-        .catch( error => {
-            console.error(error);
-            return 0;
-        });
+    this.service = firebase.firestore();
+    const settings = { timestampsInSnapshots: true };
+    this.service.settings(settings);
+    firebase
+      .firestore()
+      .enablePersistence()
+      .then(() => {
+        this.service = firebase.firestore();
+        this.service.settings(settings);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
   }
 
   public async all(collectionName: string): Promise<any> {

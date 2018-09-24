@@ -9,6 +9,10 @@ import { AuthService } from '../../services/auth';
 export class AppHome {
   @Prop() auth: AuthService;
 
+  componentWillLoad() {
+    console.log("Login Page will be loaded")
+   // ON LOAD
+  }
   componentDidLoad() {
     console.log("Login Page loaded")
    // ON LOAD
@@ -30,7 +34,6 @@ export class AppHome {
 
   render() {
     return (
-      <ion-content>
         <ion-card>
           <ion-card-header>
             Login
@@ -49,15 +52,14 @@ export class AppHome {
               </ion-item>
 
               <ion-item>
-                <ion-fab horizontal='start' vertical='bottom' edge>
-                  <button ion-fab onClick={(event:UIEvent) => this.login(event, "google")}><ion-icon name="add" /></button>
-                </ion-fab>
+                <ion-button onClick={(event: UIEvent) => this.login(event, "google")}>
+                  <ion-icon name="add"></ion-icon>
+                </ion-button>
               </ion-item>
 
             </ion-list>
           </ion-card-content>
         </ion-card>
-      </ion-content>
     );
   }
 }

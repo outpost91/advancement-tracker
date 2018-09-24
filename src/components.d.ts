@@ -7,44 +7,49 @@
 import '@stencil/core';
 
 import '@ionic/core';
-import 'ionicons';
 import '@stencil/router';
 import '@stencil/state-tunnel';
+import 'ionicons';
 import {
   AuthService,
 } from './services/auth';
 import {
   DatabaseService,
-} from './services/database';
+} from './services/Firestore';
 import {
-  RouterHistory,
-} from '@stencil/router';
+  DatabaseService as DatabaseService2,
+} from './services/Database';
 
 
 export namespace Components {
 
-  interface AdvRangerList {
+  interface AdvGroupTab {
+    'adventure': boolean | undefined | null;
+    'discovery': boolean | undefined | null;
+    'expedition': boolean | undefined | null;
+    'kids': boolean | undefined | null;
+  }
+  interface AdvGroupTabAttributes extends StencilHTMLAttributes {
+    'adventure'?: boolean | undefined | null;
+    'discovery'?: boolean | undefined | null;
+    'expedition'?: boolean | undefined | null;
+    'kids'?: boolean | undefined | null;
+  }
+
+  interface AdvRangerGroups {
     'auth': AuthService;
     'db': DatabaseService;
   }
-  interface AdvRangerListAttributes extends StencilHTMLAttributes {
+  interface AdvRangerGroupsAttributes extends StencilHTMLAttributes {
     'auth'?: AuthService;
     'db'?: DatabaseService;
   }
 
-  interface TrackerApp {
-    'history': RouterHistory;
-  }
-  interface TrackerAppAttributes extends StencilHTMLAttributes {
-    'history'?: RouterHistory;
-  }
+  interface TrackerApp {}
+  interface TrackerAppAttributes extends StencilHTMLAttributes {}
 
-  interface TrackerHome {
-    'auth': AuthService;
-  }
-  interface TrackerHomeAttributes extends StencilHTMLAttributes {
-    'auth'?: AuthService;
-  }
+  interface TrackerHome {}
+  interface TrackerHomeAttributes extends StencilHTMLAttributes {}
 
   interface TrackerLoginItem {
     'Auth': AuthService;
@@ -63,6 +68,48 @@ export namespace Components {
     'auth'?: AuthService;
   }
 
+  interface TrackerPlannerCheckboxItem {
+    'id': string | null;
+    'items': any;
+    'label': string;
+  }
+  interface TrackerPlannerCheckboxItemAttributes extends StencilHTMLAttributes {
+    'id'?: string | null;
+    'items'?: any;
+    'label'?: string;
+  }
+
+  interface TrackerPlannerDateItem {
+    'id': string;
+    'label': string;
+  }
+  interface TrackerPlannerDateItemAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'label'?: string;
+  }
+
+  interface TrackerPlannerSegmentItem {
+    'id': string;
+    'items': any;
+  }
+  interface TrackerPlannerSegmentItemAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'items'?: any;
+    'onTrackerSegmentChange'?: (event: CustomEvent) => void;
+  }
+
+  interface TrackerPlannerSelectItem {
+    'id': string;
+    'items': any;
+    'label': string;
+  }
+  interface TrackerPlannerSelectItemAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'items'?: any;
+    'label'?: string;
+    'onTrackerSelectChange'?: (event: CustomEvent) => void;
+  }
+
   interface TrackerPlanner {
     'auth': AuthService;
     'db': DatabaseService;
@@ -75,28 +122,44 @@ export namespace Components {
 
 declare global {
   interface StencilElementInterfaces {
-    'AdvRangerList': Components.AdvRangerList;
+    'AdvGroupTab': Components.AdvGroupTab;
+    'AdvRangerGroups': Components.AdvRangerGroups;
     'TrackerApp': Components.TrackerApp;
     'TrackerHome': Components.TrackerHome;
     'TrackerLoginItem': Components.TrackerLoginItem;
     'TrackerLogin': Components.TrackerLogin;
+    'TrackerPlannerCheckboxItem': Components.TrackerPlannerCheckboxItem;
+    'TrackerPlannerDateItem': Components.TrackerPlannerDateItem;
+    'TrackerPlannerSegmentItem': Components.TrackerPlannerSegmentItem;
+    'TrackerPlannerSelectItem': Components.TrackerPlannerSelectItem;
     'TrackerPlanner': Components.TrackerPlanner;
   }
 
   interface StencilIntrinsicElements {
-    'adv-ranger-list': Components.AdvRangerListAttributes;
+    'adv-group-tab': Components.AdvGroupTabAttributes;
+    'adv-ranger-groups': Components.AdvRangerGroupsAttributes;
     'tracker-app': Components.TrackerAppAttributes;
     'tracker-home': Components.TrackerHomeAttributes;
     'tracker-login-item': Components.TrackerLoginItemAttributes;
     'tracker-login': Components.TrackerLoginAttributes;
+    'tracker-planner-checkbox-item': Components.TrackerPlannerCheckboxItemAttributes;
+    'tracker-planner-date-item': Components.TrackerPlannerDateItemAttributes;
+    'tracker-planner-segment-item': Components.TrackerPlannerSegmentItemAttributes;
+    'tracker-planner-select-item': Components.TrackerPlannerSelectItemAttributes;
     'tracker-planner': Components.TrackerPlannerAttributes;
   }
 
 
-  interface HTMLAdvRangerListElement extends Components.AdvRangerList, HTMLStencilElement {}
-  var HTMLAdvRangerListElement: {
-    prototype: HTMLAdvRangerListElement;
-    new (): HTMLAdvRangerListElement;
+  interface HTMLAdvGroupTabElement extends Components.AdvGroupTab, HTMLStencilElement {}
+  var HTMLAdvGroupTabElement: {
+    prototype: HTMLAdvGroupTabElement;
+    new (): HTMLAdvGroupTabElement;
+  };
+
+  interface HTMLAdvRangerGroupsElement extends Components.AdvRangerGroups, HTMLStencilElement {}
+  var HTMLAdvRangerGroupsElement: {
+    prototype: HTMLAdvRangerGroupsElement;
+    new (): HTMLAdvRangerGroupsElement;
   };
 
   interface HTMLTrackerAppElement extends Components.TrackerApp, HTMLStencilElement {}
@@ -123,6 +186,30 @@ declare global {
     new (): HTMLTrackerLoginElement;
   };
 
+  interface HTMLTrackerPlannerCheckboxItemElement extends Components.TrackerPlannerCheckboxItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerCheckboxItemElement: {
+    prototype: HTMLTrackerPlannerCheckboxItemElement;
+    new (): HTMLTrackerPlannerCheckboxItemElement;
+  };
+
+  interface HTMLTrackerPlannerDateItemElement extends Components.TrackerPlannerDateItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerDateItemElement: {
+    prototype: HTMLTrackerPlannerDateItemElement;
+    new (): HTMLTrackerPlannerDateItemElement;
+  };
+
+  interface HTMLTrackerPlannerSegmentItemElement extends Components.TrackerPlannerSegmentItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerSegmentItemElement: {
+    prototype: HTMLTrackerPlannerSegmentItemElement;
+    new (): HTMLTrackerPlannerSegmentItemElement;
+  };
+
+  interface HTMLTrackerPlannerSelectItemElement extends Components.TrackerPlannerSelectItem, HTMLStencilElement {}
+  var HTMLTrackerPlannerSelectItemElement: {
+    prototype: HTMLTrackerPlannerSelectItemElement;
+    new (): HTMLTrackerPlannerSelectItemElement;
+  };
+
   interface HTMLTrackerPlannerElement extends Components.TrackerPlanner, HTMLStencilElement {}
   var HTMLTrackerPlannerElement: {
     prototype: HTMLTrackerPlannerElement;
@@ -130,20 +217,30 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
-    'adv-ranger-list': HTMLAdvRangerListElement
+    'adv-group-tab': HTMLAdvGroupTabElement
+    'adv-ranger-groups': HTMLAdvRangerGroupsElement
     'tracker-app': HTMLTrackerAppElement
     'tracker-home': HTMLTrackerHomeElement
     'tracker-login-item': HTMLTrackerLoginItemElement
     'tracker-login': HTMLTrackerLoginElement
+    'tracker-planner-checkbox-item': HTMLTrackerPlannerCheckboxItemElement
+    'tracker-planner-date-item': HTMLTrackerPlannerDateItemElement
+    'tracker-planner-segment-item': HTMLTrackerPlannerSegmentItemElement
+    'tracker-planner-select-item': HTMLTrackerPlannerSelectItemElement
     'tracker-planner': HTMLTrackerPlannerElement
   }
 
   interface ElementTagNameMap {
-    'adv-ranger-list': HTMLAdvRangerListElement;
+    'adv-group-tab': HTMLAdvGroupTabElement;
+    'adv-ranger-groups': HTMLAdvRangerGroupsElement;
     'tracker-app': HTMLTrackerAppElement;
     'tracker-home': HTMLTrackerHomeElement;
     'tracker-login-item': HTMLTrackerLoginItemElement;
     'tracker-login': HTMLTrackerLoginElement;
+    'tracker-planner-checkbox-item': HTMLTrackerPlannerCheckboxItemElement;
+    'tracker-planner-date-item': HTMLTrackerPlannerDateItemElement;
+    'tracker-planner-segment-item': HTMLTrackerPlannerSegmentItemElement;
+    'tracker-planner-select-item': HTMLTrackerPlannerSelectItemElement;
     'tracker-planner': HTMLTrackerPlannerElement;
   }
 
