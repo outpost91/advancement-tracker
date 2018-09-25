@@ -3,14 +3,10 @@
  */
 // import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 // import { TwitterConnect } from '@ionic-native/twitter-connect';
-// import * as firebase from 'firebase';
-
-// import firebase from 'firebase';
-
-declare var firebase: any;
+import * as firebase from 'firebase';
 
 export class AuthService {
-  public service: any;
+  public service: firebase.auth.Auth;
   public session: any;
   public fetch_options: {
       method: string;
@@ -23,7 +19,7 @@ export class AuthService {
     // private twitter: TwitterConnect
     config?: any
   ) {
-    // this.user = afAuth.authState;
+
     let firstRun = false;
     if (firebase.apps.length === 0) {
       firebase.initializeApp(config);
@@ -85,7 +81,7 @@ export class AuthService {
   }
 
   onAuthChanged(callback) {
-    this.service.onAuthStateChanged((session) => {
+    this.service.onAuthStateChanged(session => {
       if (!session || (!session.emailVerified && session.providerData && session.providerData[0].providerId === 'password')) {
         return false;
       }
@@ -123,20 +119,11 @@ export class AuthService {
     document.body.dispatchEvent(new CustomEvent('authLoggedOut', { detail: {} }));
   }
 
-  createUser(email: string
-  ) {
-    return new Promise((resolve, reject) => {
-      try {
-        console.log('am I here?');
-        this.service.createUserWithEmailAndPassword(email).then((data) => {
-          resolve(data);
-        }).catch((error) => {
-          reject(error);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+  createUser(email: string, password: string) {
+    console.log('am I here?');
+    this.service.createUserWithEmailAndPassword(email, password)
+      .then(data => data)
+      .catch(error => error);
   }
 
   sendEmailVerification(options?) {
@@ -150,7 +137,7 @@ export class AuthService {
   withEmail(email: string, password: string) {
     return new Promise((resolve, reject) => {
       try {
-        this.service.signInWithEmailAndPassword(email, password).then((user) => {
+        this.service.signInWithEmailAndPassword(email, password).then(user => {
           this.emitLoggedInEvent({ user });
           resolve({ data: { user } });
         }).catch((error) => {
@@ -260,13 +247,21 @@ export class AuthService {
         } else {
           reject({ message: 'A social network is required or the one provided is not yet supported.' });
         }
-        this.service[shouldRedirect ? 'signInWithRedirect' : 'signInWithPopup'](provider).then((data) => {
-          this.emitLoggedInEvent(data);
-          resolve(data);
-        }).catch((error) => {
-          reject(error);
-        });
-
+        if (shouldRedirect) {
+          this.service.signInWithRedirect(provider).then(data => {
+            this.emitLoggedInEvent(data);
+            resolve(data);
+          }).catch((error) => {
+            reject(error);
+          });
+        } else {
+          this.service.signInWithPopup(provider).then(data => {
+            this.emitLoggedInEvent(data);
+            resolve(data);
+          }).catch((error) => {
+            reject(error);
+          });
+        }
     });
   }
 

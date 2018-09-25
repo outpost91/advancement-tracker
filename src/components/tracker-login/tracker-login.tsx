@@ -1,4 +1,4 @@
-import { Component, Prop } from '@stencil/core';
+import { Component, Element, Prop } from '@stencil/core';
 
 import { AuthService } from '../../services/auth';
 
@@ -6,29 +6,34 @@ import { AuthService } from '../../services/auth';
   tag: 'tracker-login',
   styleUrl: 'tracker-login.scss'
 })
-export class AppHome {
+export class TrackerLogin {
+  @Element() el: HTMLTrackerLoginElement;
   @Prop() auth: AuthService;
 
-  componentWillLoad() {
-    console.log("Login Page will be loaded")
-   // ON LOAD
-  }
-  componentDidLoad() {
-    console.log("Login Page loaded")
-   // ON LOAD
-  }
-
-  login(event, type: string = 'email') {
+  private login(event, type: string = 'email') {
     event.preventDefault();
 
     if(type === 'email') {
-      console.log('email login type');
+      const email: HTMLInputElement = this.el.querySelector('ion-input#email_id input');
+      const pass: HTMLInputElement = this.el.querySelector('ion-input#pass_id input')
+    
+      this.auth.withEmail(email.value, pass.value);
     } else {
-      this.auth.withSocial(type).then((data) => {
+      this.auth.withSocial(type).then(data => {
         console.log(data);
       }).catch(error => {
         console.log(error);
       });
+    }
+  }
+  
+  private register(event, type: string = 'email') {
+    event.preventDefault();
+
+    const email: HTMLInputElement = this.el.querySelector('ion-input#email_id input');
+    const pass: HTMLInputElement = this.el.querySelector('ion-input#pass_id input')
+    if(type === 'email') {
+      this.auth.createUser(email.value, pass.value);
     }
   }
 
@@ -39,21 +44,31 @@ export class AppHome {
             Login
           </ion-card-header>
           <ion-card-content>
-            <ion-list>
+            <ion-list lines='none'>
 
-              <ion-item>
+              <ion-item lines='inset'>
                 <ion-label position="floating">Email</ion-label>
                 <ion-input type="text" id="email_id"></ion-input>
               </ion-item>
 
-              <ion-item>
+              <ion-item lines='inset'>
                 <ion-label position="floating">Password</ion-label>
                 <ion-input type="password"  id="pass_id"></ion-input>
               </ion-item>
 
               <ion-item>
-                <ion-button onClick={(event: UIEvent) => this.login(event, "google")}>
-                  <ion-icon name="add"></ion-icon>
+                <ion-button shape='round' size='large' fill='outline' onClick={(event: UIEvent) => this.login(event, "email")}>
+                  Login
+                  <ion-icon slot='start' name="log-in"></ion-icon>
+                </ion-button>
+                <ion-button shape='round' size='large' fill='outline' onClick={(event: UIEvent) => this.login(event, "google")}>
+                  <ion-icon name="logo-google"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <ion-item>
+                <ion-button onClick={(event: UIEvent) => this.register(event, "email")}>
+                  Register
+                  <ion-icon slot='start' name="create"></ion-icon>
                 </ion-button>
               </ion-item>
 
