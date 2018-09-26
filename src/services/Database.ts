@@ -1,139 +1,111 @@
-// import firebase from 'firebase';
-// import '@firebase/firestore'
-declare var firebase: any;
+/**
+ * @module Services
+ */
+import firebase from 'firebase/App';
+import 'firebase/database';
+import 'firebase/functions';
+// import fetch from 'node-fetch';
 
 export class DatabaseService {
-  public service: any;
-  public watchers: any = {};
-  public options: any;
+  service: firebase.database.Reference;
+  watchers: any = {};
+  options: any;
+  photoURLBase: string;
+  dbURLBase: string;
 
-  public constructor() {
+  constructor() {
     this.service = firebase.database().ref();
+    this.photoURLBase = 'https://files.breezechms.com/';
+    this.dbURLBase = 'https://ranger-tracker.firebaseapp.com';
   }
 
-  public fetch_options(options: any) {
+  fetch_options(options: any) {
     this.options = options;
   }
 
-  public async merits(group: string) {
-    const data = [];
-
-    await this.service.child('merits').orderByChild('name')
-        .once('value')
-        .then( snapshot => {
-            snapshot.forEach( childsnap => {
-                if (childsnap.child('group').val() === group) {
-                    data.push({ value: childsnap.child('name').val(), key: childsnap.key });
-                }
-            })
-        })
-    
-    return data;
+  async add_lesson(data) {
+    return this.service.child('lessons').push(data);
   }
 
-  public async requirements(key: string) {
-    return await this.service.child('merits/' + key)
-        .once("value")
+  async merits(group: string, type: string | null | undefined) {
+    let _group: string | null | undefined;
+    let _type: string | null | undefined;
+
+    _group = (group != null && group !== '') ? group.toLowerCase() : null;
+    _type = (type !== undefined && type != null && type !== '') ? type.toLowerCase() : null;
+
+    if (_group === null) {
+        console.log('Group Name must be defined!');
+
+        return [];
+    }
+
+    return this.service.child('merits').orderByChild('name')
+        .once('value')
         .then(snapshot => {
-            if( snapshot.hasChild('num-reqs')
-            && snapshot.child('num-reqs').val() ) {
-                return parseInt(snapshot.child('num-reqs').val());
+            const snapdata = [];
+            snapshot.forEach(childsnap => {
+                if ((childsnap.child('group').val().toLowerCase() === _group && _type == null)
+                 || (childsnap.child('group').val().toLowerCase() === _group && childsnap.child('type').val().toLowerCase() === _type)) {
+                    snapdata.push({ value: childsnap.child('name').val(), key: childsnap.key });
+                }
+            });
+
+            return snapdata;
+        });
+  }
+
+  async bibleMerits(group: string) {
+    return this.merits(group, 'bible');
+  }
+
+  async skillMerits(group: string) {
+    return this.merits(group, 'skill');
+  }
+
+  async requirements(key: string) {
+    return this.service.child('merits/' + key)
+        .once('value')
+        .then(snapshot => {
+            if (snapshot.hasChild('num-reqs')
+            && snapshot.child('num-reqs').val()) {
+                return parseInt(snapshot.child('num-reqs').val(), 10);
             }
         })
-        .catch( error => {
-            console.log(error);
-            
+        .catch(_ => {
             return 0;
         });
   }
 
-  public async all(collectionName: string): Promise<any> {
-    const collection = await this.get(collectionName);
-    const data = {};
-
-    await collection.forEach(doc => {
-      data[doc.id] = doc.data();
-    });
-
-    return data;
-  }
-
-  public async call(functionName: string, payload: any = {}) {
+  async call(functionName: string, payload: any = {}) {
     return firebase.functions().httpsCallable(functionName)(payload);
   }
 
-  public async list(collectionName: string) {
-    const collection = await this.get(collectionName);
-    const data = [];
-
-    await collection.forEach(doc => {
-      data.push({ ...doc.data(), id: doc.id });
-    });
-
-    return data;
-  }
-
-  public async add(collectionName: string, data: any, id?: number | string) {
-    let document = await this.collection(collectionName);
-    document = id ? document.doc(id) : document.doc();
-
-    return document.set(data);
-  }
-
-  public collection(collectionName: string) {
-    return this.service.collection(collectionName);
-  }
-
-  public get(collectionName: string) {
-    return this.collection(collectionName).get();
-  }
-
-  public document(collectionName: string, id: string) {
-    return this.collection(collectionName).doc(id);
-  }
-
-  public getDocument(collectionName: string, id: string) {
-    return this.document(collectionName, id).get();
-  }
-
-  public async find(collectionName: string, id: string) {
-    const document = await this.getDocument(collectionName, id);
-
-    return { ...document.data(), id: document.id };
-  }
-
-  public async update(collectionName: string, id: string, data: any) {
-    const document = this.document(collectionName, id);
-    await document.set(data, { merge: true });
-    const newDocument = await document.get();
-
-    return newDocument.data();
-  }
-
-  public watchDocument(collectionName: string, id: string, callback) {
-    this.watchers[`${collectionName}:${id}`] = this.document(
-      collectionName,
-      id
-    ).onSnapshot(doc => {
-      if (callback && typeof callback === 'function') {
-        callback({ data: doc.data() });
-      }
-    });
-  }
-
-  public unwatchDocument(collectionName: string, id: string) {
-    const watcherName = `${collectionName}:${id}`;
-    if (
-      this.watchers[watcherName] &&
-      typeof this.watchers[watcherName] === 'function'
-    ) {
-      this.watchers[watcherName]();
-
-      return true;
-    } else {
-      console.log(`There is no watcher running on ${watcherName} document.`);
-
-      return false;
+  async fetch(baseUrl: string, params: {}) {
+    const paramsList = [];
+    for (const x in params) {
+        paramsList.push(x.concat('=', params[x]));
     }
+
+    return fetch(this.dbURLBase.concat(baseUrl, '?', paramsList.join('&')), this.options);
   }
+
+  async fetch_attendance(params: {
+                            calendar: string,
+                            start_date: string,
+                            end_date: string,
+                            instance_id?: string}) {
+    this.options.method = 'GET';
+
+    return this.fetch('/listEligible', params)
+      .then(res => res.json());
+  }
+
+  async fetch_image(img: string) {
+    this.options.method = 'GET';
+    img = img.startsWith('/') ? img : '/' + img;
+
+    return this.fetch('/getImage', { endpoint: img });
+  }
+
 }

@@ -7,7 +7,6 @@ import { Component, Event, EventEmitter, Listen, Prop } from '@stencil/core';
 })
 export class TrackerPlannerSegmentItem {
   @Prop() id: string;
-  @Prop() items: any = [];
 
   @Event() trackerSegmentChange: EventEmitter;
 
@@ -15,8 +14,8 @@ export class TrackerPlannerSegmentItem {
   onIonChange(event: CustomEvent) {
     event.preventDefault();
     event.stopPropagation();
-    
-    this.trackerSegmentChange.emit(event.detail);
+
+    this.trackerSegmentChange.emit({ ...event.detail, id: this.id });
   }
 
   render() {

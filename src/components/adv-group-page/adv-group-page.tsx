@@ -58,9 +58,9 @@ export class AdvGroupPage {
 
   render() {
     return (
-      <div>
+      <ion-page>
         Your new {this.groupStr} component
-      </div>
+      </ion-page>
     );
   }
 }

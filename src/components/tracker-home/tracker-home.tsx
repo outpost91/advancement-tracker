@@ -6,7 +6,7 @@ import { Component } from '@stencil/core';
 })
 export class TrackerHome {
   componentWillLoad() {
-    console.log("Hello World");
+    console.log('Hello World');
   }
 
   render() {

@@ -28,19 +28,19 @@ export class TrackerApp {
   };
   @State() authorized = false;
 
-  async showToast(isSignedIn: boolean, position: 'top' | 'bottom' | 'middle' = 'bottom') {
-    this._msg = 'Signed Out!';
-    if (isSignedIn) {
-      this._msg = 'Welcome Back';
+  async showToast(position: 'top' | 'bottom' | 'middle' = 'bottom') {
+    let _msg = 'Signed Out!';
+    if (this.Auth.isLoggedIn() != null) {
+      _msg = 'Welcome Back';
     }
 
     if (this.Auth.isLoggedIn().displayName !== '') {
-      this._msg = this._msg.concat(', ', this.Auth.isLoggedIn().displayName);
+      _msg = _msg.concat(', ', this.Auth.isLoggedIn().displayName);
     }
 
     const toast = await this.toastCtrl.create({
-      message: this._msg,
-      duration: 2000,
+      message: _msg,
+      duration: 1000,
       position
     });
 
@@ -72,7 +72,7 @@ export class TrackerApp {
     this.Auth.onAuthChanged(data => {
       if (this.authorized !== (data != null)) {
         this.authorized = (data != null);
-        this.showToast(this.authorized);
+        this.showToast();
       }
       this.Database.fetch_options(this.Auth.fetch_options);
     });
@@ -97,7 +97,7 @@ export class TrackerApp {
           <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
-                <tracker-login-item authorized={this.authorized} Auth={this.Auth} onAuthClicked={ev => this.handleLogoutClick(ev)} ></tracker-login-item>
+                <tracker-login-item auth={this.Auth} onAuthClicked={ev => this.handleLogoutClick(ev)} ></tracker-login-item>
                 {this.authorized
                   ? <ion-item href="/planner">Planner</ion-item>
                   : null
@@ -115,28 +115,8 @@ export class TrackerApp {
                 }
                 <stencil-route url="/home" component="tracker-home" componentProps={this.defaultProps} />
                 <stencil-route url="/login" component="tracker-login" componentProps={this.defaultProps} />
-                <stencil-route url="/advancement" component="adv-ranger-groups" componentProps={this.defaultProps} />
-                {this.authorized
-                  ? <stencil-route url="/planner" component="tracker-planner" componentProps={this.defaultProps} />
-                  : null
-                }
-                {this.authorized
-                  ? <stencil-route url="/advancement/kids" component="adv-kids-page" componentProps={this.defaultProps} />
-                  : null
-                }
-                {this.authorized
-                  ? <stencil-route url="/advancement/discovery" component="adv-discovery-page" componentProps={this.defaultProps} />
-                  : null
-                }
-                {this.authorized
-                  ? <stencil-route url="/advancement/adventure" component="adv-adventure-page" componentProps={this.defaultProps} />
-                  : null
-                }
-                {this.authorized
-                  ? <stencil-route url="/advancement/expedition" component="adv-expedition-page" componentProps={this.defaultProps} />
-                  : null
-                }
-                <stencil-route component="tracker-home" componentProps={this.defaultProps} />
+                <stencil-route url={['/advancement/:tab', '/advancement/', '/advancement']} component="adv-ranger-groups" componentProps={this.defaultProps} />
+                <stencil-route url="/planner" component="tracker-planner" componentProps={this.defaultProps} />
               </stencil-route-switch>
             </stencil-router>
           </ion-page>

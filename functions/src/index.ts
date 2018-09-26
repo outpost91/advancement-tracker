@@ -43,8 +43,8 @@ const app = express();
 app.use(cors({ origin: true }));
 //app.use(favicon('./public/favicon.ico'));
 app.use(cookieParser());
-app.use(validateFirebaseIdToken);
-app.use(userAccessGranted);
+//app.use(validateFirebaseIdToken);
+//app.use(userAccessGranted);
 
 //API routes
 app.route('/getPeople')
@@ -88,6 +88,10 @@ app.route('/listEligible')
     .get( lib.listEligible )
     .post( lib.listEligible )
 
+app.route('/getImage')
+    .get( lib.getImage )
+    .post( lib.getImage )
+
 export const api = functions.https.onRequest((request, response) => {
     return app(util.wrapperURL(request), response)
 });
@@ -114,7 +118,7 @@ export const updateBreezeAttendance = functions.database.ref('/lessons/{lessonID
                     return change.after.ref.once('value')
                 }).then( attendanceSnapShot => {
                     const promises = []
-                    attendanceSnapShot.forEach( childSnap => {
+                    attendanceSnapShot.forEach( (childSnap: admin.database.DataSnapshot): boolean => {
                         if( childSnap.val() ) {
                             const req = {'query': {'person_id': childSnap.key.split('-').pop(), 'calendar': 'Royal Rangers'}}
                         
@@ -127,6 +131,8 @@ export const updateBreezeAttendance = functions.database.ref('/lessons/{lessonID
                             
                             promises.push(lib.updateCheckIn(req))
                         }
+
+                        return false;
                     })
 
                     return Promise.all(promises);

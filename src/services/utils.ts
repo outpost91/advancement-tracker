@@ -13,3 +13,33 @@ export function urlB64ToUint8Array(base64String: string) {
 
   return outputArray;
 }
+
+export function formatDate(date: any) {
+  let _date: string;
+
+  if (typeof date === 'string') {
+    _date = date.split('T')[0];
+  } else {
+    let year;
+    let month;
+    let day;
+    year = date
+              .year
+              .value
+              .toString()
+              .padStart(4, '0');
+    month = date
+              .month
+              .value
+              .toString()
+              .padStart(2, '0');
+    day = date
+              .day
+              .value
+              .toString()
+              .padStart(2, '0');
+    _date = year + '-' + month + '-' + day;
+  }
+
+  return _date;
+}
