@@ -58,9 +58,9 @@ export class AdvGroupPage {
 
   render() {
     return (
-      <div>
-        Your new {this.groupStr} component
-      </div>
+      <ion-page>
+        The {this.groupStr} page is still Under Construction. Check back.
+      </ion-page>
     );
   }
 }

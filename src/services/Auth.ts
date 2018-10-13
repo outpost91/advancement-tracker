@@ -3,15 +3,16 @@
  */
 // import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 // import { TwitterConnect } from '@ionic-native/twitter-connect';
-import * as firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 export class AuthService {
   public service: firebase.auth.Auth;
   public session: any;
-  public fetch_options: {
-      method: string;
-      headers: { 'Authorization': string };
-      mode: string;
+  public fetch_options = {
+      method: '',
+      headers: { 'Authorization': '' },
+      mode: 'cors'
   };
 
   constructor(
@@ -22,29 +23,28 @@ export class AuthService {
 
     let firstRun = false;
     if (firebase.apps.length === 0) {
+      console.log('First Run Initializing App');
       firebase.initializeApp(config);
       firstRun = true;
     }
     this.service = firebase.auth();
-    
     if (firstRun) {
-      this.service.getRedirectResult().then((data) => {
+      this.service.getRedirectResult().then(data => {
         if (data && data.user) {
           this.emitLoggedInEvent(data);
         }
       });
     }
-
   }
 
   async onEmailLink() {
-    if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+    if (this.service.isSignInWithEmailLink(window.location.href)) {
       let email = window.localStorage.getItem('emailForSignIn');
       if (!email) {
         email = window.prompt('Please provide your email for confirmation');
       }
 
-      const authUser = await firebase.auth().signInWithEmailLink(email, window.location.href);
+      const authUser = await this.service.signInWithEmailLink(email, window.location.href);
       window.localStorage.removeItem('emailForSignIn');
 
       this.emitLoggedInEvent(authUser);
@@ -54,15 +54,15 @@ export class AuthService {
   }
 
   createCaptcha(buttonId: string) {
-    (<any>window).RecaptchaVerifier = new firebase.auth.RecaptchaVerifier(buttonId, {
+    (window as any).RecaptchaVerifier = new firebase.auth.RecaptchaVerifier(buttonId, {
       'size': 'invisible',
-      'callback': function () {
+      'callback'() {
         // On Capture Creation
       }
     });
   }
 
-  withPhoneNumber(phoneNumber: string, capId: any){
+  withPhoneNumber(phoneNumber: string, capId: any) {
         // reCAPTCHA solved, allow signInWithPhoneNumber.
         phoneNumber = '+' + phoneNumber;
         window.localStorage.setItem('phoneForSignIn', phoneNumber);
@@ -85,17 +85,17 @@ export class AuthService {
       if (!session || (!session.emailVerified && session.providerData && session.providerData[0].providerId === 'password')) {
         return false;
       }
-      console.log('session - ', session);
+
       if (session) {
         localStorage.setItem('tmg:session', JSON.stringify(session));
       }
       session.getIdToken()
-        .then( (token: string) => {
+        .then((token: string) => {
           this.fetch_options.headers.Authorization = 'Bearer ' + token;
         })
-        .catch( e => {
-          console.log(e)
-        })
+        .catch(e => {
+          console.log(e);
+        });
 
       if (callback && typeof callback === 'function') {
         callback(session);
@@ -155,7 +155,7 @@ export class AuthService {
   //             this.facebook.login(['email', 'public_profile', 'user_friends'])
   //                 .then((facebookData: FacebookLoginResponse) => {
   //                     const credential = firebase.auth.FacebookAuthProvider.credential(facebookData.authResponse.accessToken);
-  //                     firebase.auth().signInWithCredential(credential).then((firebaseData) => {
+  //                     this.service.signInWithCredential(credential).then((firebaseData) => {
   //                         resolve(firebaseData);
   //                     });
   //                 }, (error) => {
@@ -169,12 +169,12 @@ export class AuthService {
 
   googleNative(): Promise<any> {
     return new Promise((resolve, reject) => {
-      (<any>window).plugins.googleplus.login({
+      (window as any).plugins.googleplus.login({
         webClientId: '423724975087-uqfg4lrfe2fsal8v1oihf5mcj3ikvqnl.apps.googleusercontent.com',
         offline: true
       }, (googleData) => {
         const credential = firebase.auth.GoogleAuthProvider.credential(googleData.idToken);
-        firebase.auth().signInWithCredential(credential).then((firebaseData) => {
+        this.service.signInWithCredential(credential).then((firebaseData) => {
           resolve(firebaseData);
         });
       }, (error) => {
@@ -187,7 +187,7 @@ export class AuthService {
   //     return new Promise((resolve, reject) => {
   //         this.twitter.login().then((twitterData) => {
   //             const credential = firebase.auth.TwitterAuthProvider.credential(twitterData.token, twitterData.secret);
-  //             firebase.auth().signInWithCredential(credential).then((firebaseData) => {
+  //             this.service.signInWithCredential(credential).then((firebaseData) => {
   //                 resolve(firebaseData);
   //             });
   //         }, (error) => {
@@ -197,7 +197,6 @@ export class AuthService {
   // }
 
   withSocial(network: string, redirect = false): Promise<any> {
-    console.log(network);
     // let provider;
     // return new Promise((resolve, reject) => {
     //     if (this.platform.is('cordova')) {
@@ -272,9 +271,9 @@ export class AuthService {
   }
 
   async updatePassword(newPassword: string) {
-    console.log(firebase.auth().currentUser);
+    console.log(this.service.currentUser);
     // await user.reauthenticateWithCredential(credential);
 
-    return firebase.auth().currentUser.updatePassword(newPassword);
+    return this.service.currentUser.updatePassword(newPassword);
   }
 }

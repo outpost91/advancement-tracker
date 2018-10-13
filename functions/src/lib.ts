@@ -8,6 +8,7 @@ import * as breeze_key from './breeze-key.json';
  *   const brz = breeze.BreezeApi('https://<demo>.breezechms.com', '5c2d2cbacg3...')
  */
 const brz = breeze.BreezeApi(breeze_fetch.BreezeAsync(breeze_key.config.breeze_url, breeze_key.config.api_key))
+const fls = breeze.BreezeApi(breeze_fetch.BreezeAsync(breeze_key.config.files_url, breeze_key.config.api_key))
 
 /**
  * Generic HTTPfunction call for Breeze API object
@@ -109,6 +110,15 @@ const _genericGetEvent = req => {
                         return [response]
                     }
                 })
+}
+
+/**
+ * Get User Image
+ */
+export const getImage = req => {
+    console.log("Get Breeze user image", req.query || req.body);
+
+    return fls["get_image"](req.query || req.body);
 }
 
 /**

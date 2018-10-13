@@ -1,3 +1,4 @@
+"use strict";
 /**
 *   TypeScript wrapper for Breeze ChMS API: http://breezechms.com/docs#extensions_api
 *   The Breeze API allows churches to build custom functionality integrated with
@@ -12,15 +13,9 @@
 *       console.log(person['first_name'], person['last_name'])
 *     }
 */
-
-import fetch from 'node-fetch'
-
-interface _request_params {
-    headers?:{},
-    timeout?:number
-}
-
-export class BreezeError extends Error {
+Object.defineProperty(exports, "__esModule", { value: true });
+const node_fetch_1 = require("node-fetch");
+class BreezeError extends Error {
     /* Error for BreezeApi.
     */
     constructor(message) {
@@ -28,16 +23,14 @@ export class BreezeError extends Error {
         this.name = "BreezeError";
     }
 }
-
-const _request_succeeded = ( response ) => {
+exports.BreezeError = BreezeError;
+const _request_succeeded = (response) => {
     /* Predicate to ensure that the HTTP request succeeded.
     */
-    return !((typeof response !== 'boolean' ) && ( ('error' in response) || ('errorCode' in response) ) );
-}
-
+    return !((typeof response !== 'boolean') && (('error' in response) || ('errorCode' in response)));
+};
 const _request = (state) => ({
-    request: ( endpoint:string,
-               optionalObj?:_request_params ) => {
+    request: (endpoint, optionalObj) => {
         /* Makes an async HTTP 'GET' request to a given url.
         Args:
           endpoint: URL where the service can be accessed.
@@ -49,11 +42,9 @@ const _request = (state) => ({
           BreezeError if connection or request fails.
         */
         console.log("request", endpoint);
-        const url:string = state.breeze_url + endpoint;
-        
+        const url = state.breeze_url + endpoint;
         console.log('Making async request to %s', url);
-        
-        if( !state.dry_run ) {
+        if (!state.dry_run) {
             const options = {
                 method: 'GET',
                 headers: {
@@ -63,48 +54,38 @@ const _request = (state) => ({
                 timeout: ((optionalObj !== undefined && optionalObj.timeout !== undefined) ? optionalObj.timeout : 30) * 1000,
                 mode: 'cors'
             };
-        
-            return fetch(url, options)
-                    .then( res => {
-                        console.log(res);
-                        res.json() })
-                    .then( data => {
-                        console.log(data);
-                        if( !_request_succeeded(data) ) {
-                            return fetch.Promise.reject(new BreezeError(data));
-                        }
-                        return fetch.Promise.resolve(data);
-                    })
-                    .catch( error => {
-                        return fetch.Promise.reject(new BreezeError(error));
-                    });
+            return node_fetch_1.default(url, options)
+                .then(res => {
+                console.log(res);
+                res.json();
+            })
+                .then(data => {
+                console.log(data);
+                if (!_request_succeeded(data)) {
+                    return node_fetch_1.default.Promise.reject(new BreezeError(data));
+                }
+                return node_fetch_1.default.Promise.resolve(data);
+            })
+                .catch(error => {
+                return node_fetch_1.default.Promise.reject(new BreezeError(error));
+            });
         }
-
-        return fetch.Promise.resolve({});
+        return node_fetch_1.default.Promise.resolve({});
     }
-})
-
-export const BreezeAsync = (breeze_url:string,
-                            api_key:string,
-                            dry_run?:boolean) => {
-    
+});
+exports.BreezeAsync = (breeze_url, api_key, dry_run) => {
     if (!(breeze_url && (breeze_url.search(/^https:\/\//) > -1) &&
-            (breeze_url.search(/\.breezechms\.com$/) > -1))) {
+        (breeze_url.search(/\.breezechms\.com$/) > -1))) {
         throw new BreezeError('You must provide your breeze_url as subdomain.breezechms.com: '.concat(breeze_url));
     }
-    if( !api_key ){
+    if (!api_key) {
         throw new BreezeError('You must provide an API key.');
     }
-
     const state = {
         breeze_url,
         api_key,
         dry_run
-    }
-
-    return Object.assign(
-        {},
-        _request(state)
-    )
-        
-}
+    };
+    return Object.assign({}, _request(state));
+};
+//# sourceMappingURL=breeze-fetch.js.map

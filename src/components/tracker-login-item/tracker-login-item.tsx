@@ -1,6 +1,4 @@
-import '@ionic/core';
-
-import { Component, Event, EventEmitter, Prop } from '@stencil/core';
+import { Component, Event, EventEmitter, Prop, State } from '@stencil/core';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -8,27 +6,41 @@ import { AuthService } from '../../services/auth';
   styleUrl: 'tracker-login-item.scss'
 })
 export class TrackerLoginItem {
-  
+
+  @Prop() auth: AuthService;
   @Prop() authorized: boolean;
-  @Prop() Auth: AuthService;
+
+  @State() _authorized: boolean;
 
   @Event() authClicked: EventEmitter;
 
+  updateAuthorizedState() {
+    this._authorized = this.authorized;
+  }
+
+  componentWillLoad() {
+    this.updateAuthorizedState();
+  }
+
+  componentWillUpdate() {
+    this.updateAuthorizedState();
+  }
+
   render() {
     return (
-        <ion-item lines='full'  onClick={this.authorized
-                                          ? (event: UIEvent) => this.authClicked.emit(event)
-                                          : null}
-                                href={this.authorized
-                                        ? null 
-                                        : "/login"}>
+      <ion-item lines="full" onClick={this._authorized
+                                        ? (event: UIEvent) => this.authClicked.emit(event)
+                                        : null}
+                               href={this._authorized
+                                        ? null
+                                        : '/login'}>
         <ion-avatar slot="start" >
-          <img src={(this.authorized && this.Auth.isLoggedIn().photoURL) ? this.Auth.isLoggedIn().photoURL : "./build/app/svg/md-contact.svg"} />
+          <img src={(this._authorized && this.auth.isLoggedIn().photoURL) ? this.auth.isLoggedIn().photoURL : './build/app/svg/md-contact.svg'} />
         </ion-avatar>
         <ion-label>
-          {this.authorized
-            ? "Sign Out"
-            : "Sign In"
+          {this._authorized
+            ? 'Sign Out'
+            : 'Sign In'
           }
         </ion-label>
       </ion-item>
