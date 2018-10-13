@@ -8,31 +8,37 @@ import { AuthService } from '../../services/auth';
 export class TrackerLoginItem {
 
   @Prop() auth: AuthService;
+  @Prop() authorized: boolean;
 
-  @State() authorized = false;
+  @State() _authorized: boolean;
 
   @Event() authClicked: EventEmitter;
 
+  updateAuthorizedState() {
+    this._authorized = this.authorized;
+  }
+
   componentWillLoad() {
-    this.auth.onAuthChanged(data => {
-      this.authorized = (data != null);
-    });
+    this.updateAuthorizedState();
+  }
+
+  componentWillUpdate() {
+    this.updateAuthorizedState();
   }
 
   render() {
     return (
-        // tslint:disable-next-line:no-multi-spaces
-        <ion-item lines="full" onClick={this.authorized
+      <ion-item lines="full" onClick={this._authorized
                                         ? (event: UIEvent) => this.authClicked.emit(event)
                                         : null}
-                               href={this.authorized
+                               href={this._authorized
                                         ? null
                                         : '/login'}>
         <ion-avatar slot="start" >
-          <img src={(this.authorized && this.auth.isLoggedIn().photoURL) ? this.auth.isLoggedIn().photoURL : './build/app/svg/md-contact.svg'} />
+          <img src={(this._authorized && this.auth.isLoggedIn().photoURL) ? this.auth.isLoggedIn().photoURL : './build/app/svg/md-contact.svg'} />
         </ion-avatar>
         <ion-label>
-          {this.authorized
+          {this._authorized
             ? 'Sign Out'
             : 'Sign In'
           }

@@ -75,9 +75,11 @@ export namespace Components {
 
   interface TrackerLoginItem {
     'auth': AuthService;
+    'authorized': boolean;
   }
   interface TrackerLoginItemAttributes extends StencilHTMLAttributes {
     'auth'?: AuthService;
+    'authorized'?: boolean;
     'onAuthClicked'?: (event: CustomEvent) => void;
   }
 

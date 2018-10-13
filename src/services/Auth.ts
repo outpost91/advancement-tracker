@@ -197,7 +197,6 @@ export class AuthService {
   // }
 
   withSocial(network: string, redirect = false): Promise<any> {
-    console.log(network);
     // let provider;
     // return new Promise((resolve, reject) => {
     //     if (this.platform.is('cordova')) {

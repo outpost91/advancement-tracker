@@ -86,8 +86,9 @@ export class TrackerApp {
   handleLogoutClick(event) {
     event.preventDefault();
 
-    this.Auth.logout();
-    this.authorized = false;
+    this.Auth.logout()
+      .then(() => { this.authorized = false; });
+
   }
 
   render() {
@@ -97,7 +98,7 @@ export class TrackerApp {
           <ion-menu content-id="app-content">
             <ion-content>
               <ion-list>
-                <tracker-login-item auth={this.Auth} onAuthClicked={ev => this.handleLogoutClick(ev)} ></tracker-login-item>
+                <tracker-login-item auth={this.Auth} authorized={this.authorized} onAuthClicked={ev => this.handleLogoutClick(ev)} ></tracker-login-item>
                 {this.authorized
                   ? <ion-item href="/planner">Planner</ion-item>
                   : null
