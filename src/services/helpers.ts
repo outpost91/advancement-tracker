@@ -2,17 +2,17 @@
  * @module Services
  */
 export class HelperService {
-  public getParameterByName(name) {
+  getParameterByName(name) {
     const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
 
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
   }
 
-  public async clearCache() {
+  async clearCache() {
     return (await caches.keys()).forEach((c) => caches.delete(c));
   }
 
-  public formatUSD(amount) {
+  formatUSD(amount) {
     const formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -22,7 +22,7 @@ export class HelperService {
     return formatter.format(amount ? amount : 0);
   }
 
-  public closestByClass(el, selector) {
+  closestByClass(el, selector) {
     while (el.className !== selector) {
       el = el.parentNode;
       if (!el) {
@@ -33,7 +33,7 @@ export class HelperService {
     return el;
   }
 
-  public closestByTag(el, selector) {
+  closestByTag(el, selector) {
     while (el.tagName.toLowerCase() !== selector.toLowerCase()) {
       el = el.parentNode;
       if (!el) {
@@ -44,7 +44,7 @@ export class HelperService {
     return el;
   }
 
-  public addOnceEventListener(element, event, func, capture) {
+  addOnceEventListener(element, event, func, capture) {
     function callMeOnce(e) {
       func(e);
       element.removeEventListener(event, callMeOnce, capture);
@@ -52,7 +52,7 @@ export class HelperService {
     element.addEventListener(event, callMeOnce, capture);
   }
 
-  public setByPath(obj, path, value) {
+  setByPath(obj, path, value) {
     const pList = path.split('.');
     const len = pList.length;
     for (let i = 0; i < len - 1; i++) {
@@ -64,7 +64,7 @@ export class HelperService {
     obj[pList[len - 1]] = value;
   }
 
-  public simulateClick(el) {
+  simulateClick(el) {
     let evt;
     if (document.createEvent) {
       evt = document.createEvent('MouseEvents');
@@ -73,7 +73,7 @@ export class HelperService {
     (evt) ? el.dispatchEvent(evt) : (el.click && el.click());
   }
 
-  public forceBrowserResize() {
+  forceBrowserResize() {
     window.dispatchEvent(new Event('resize'));
   }
 

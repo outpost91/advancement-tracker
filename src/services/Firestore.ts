@@ -3,10 +3,10 @@
 declare var firebase: any;
 
 export class DatabaseService {
-  public service: any;
-  public watchers: any = {};
+  service: any;
+  watchers: any = {};
 
-  public constructor() {
+  constructor() {
     this.service = firebase.firestore();
     const settings = { timestampsInSnapshots: true };
     this.service.settings(settings);
@@ -22,7 +22,7 @@ export class DatabaseService {
       });
   }
 
-  public async all(collectionName: string): Promise<any> {
+  async all(collectionName: string): Promise<any> {
     const collection = await this.get(collectionName);
     const data = {};
 
@@ -33,11 +33,11 @@ export class DatabaseService {
     return data;
   }
 
-  public async call(functionName: string, payload: any = {}) {
+  async call(functionName: string, payload: any = {}) {
     return firebase.functions().httpsCallable(functionName)(payload);
   }
 
-  public async list(collectionName: string) {
+  async list(collectionName: string) {
     const collection = await this.get(collectionName);
     const data = [];
 
@@ -48,36 +48,36 @@ export class DatabaseService {
     return data;
   }
 
-  public async add(collectionName: string, data: any, id?: number | string) {
+  async add(collectionName: string, data: any, id?: number | string) {
     let document = await this.collection(collectionName);
     document = id ? document.doc(id) : document.doc();
 
     return document.set(data);
   }
 
-  public collection(collectionName: string) {
+  collection(collectionName: string) {
     return this.service.collection(collectionName);
   }
 
-  public get(collectionName: string) {
+  get(collectionName: string) {
     return this.collection(collectionName).get();
   }
 
-  public document(collectionName: string, id: string) {
+  document(collectionName: string, id: string) {
     return this.collection(collectionName).doc(id);
   }
 
-  public getDocument(collectionName: string, id: string) {
+  getDocument(collectionName: string, id: string) {
     return this.document(collectionName, id).get();
   }
 
-  public async find(collectionName: string, id: string) {
+  async find(collectionName: string, id: string) {
     const document = await this.getDocument(collectionName, id);
 
     return { ...document.data(), id: document.id };
   }
 
-  public async update(collectionName: string, id: string, data: any) {
+  async update(collectionName: string, id: string, data: any) {
     const document = this.document(collectionName, id);
     await document.set(data, { merge: true });
     const newDocument = await document.get();
@@ -85,7 +85,7 @@ export class DatabaseService {
     return newDocument.data();
   }
 
-  public watchDocument(collectionName: string, id: string, callback) {
+  watchDocument(collectionName: string, id: string, callback) {
     this.watchers[`${collectionName}:${id}`] = this.document(
       collectionName,
       id
@@ -96,7 +96,7 @@ export class DatabaseService {
     });
   }
 
-  public unwatchDocument(collectionName: string, id: string) {
+  unwatchDocument(collectionName: string, id: string) {
     const watcherName = `${collectionName}:${id}`;
     if (
       this.watchers[watcherName] &&

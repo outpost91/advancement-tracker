@@ -124,7 +124,8 @@ export class TrackerPlanner {
         params = { ...params, instance_id: this.instance_id };
       }
 
-    const data = await this.db.fetch_attendance(params);
+    //  data = await this.db.fetch_attendance(params);
+    const data = await this.db.getAttendance();
 
     if (data.length > 1
     && data[0].oid !== undefined

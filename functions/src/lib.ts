@@ -33,6 +33,7 @@ const _APIHandler = (fnObj, res) => {
 const _genericAPIFunctionCallWrapper = (method, args) => {
     
     if(typeof brz[method] === 'function') {
+        console.log(method + "() is not defined in " + brz.name);
         return brz[method](args) 
     } else {
         throw new ReferenceError(method + "() is not defined in " + brz.name)

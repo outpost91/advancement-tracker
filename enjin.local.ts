@@ -12,5 +12,4 @@ export default {
         storageBucket: "ranger-tracker.appspot.com",
         messagingSenderId: "223391310397"
     }
-    
-}
+};

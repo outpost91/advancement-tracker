@@ -1,13 +1,13 @@
 declare var firebase;
 
 export class StorageService {
-  public service: any;
+  service: any;
 
-  public constructor() {
+  constructor() {
     this.service = firebase.storage();
   }
 
-  public async upload(path, file, metadata = {}) {
+  async upload(path, file, metadata = {}) {
     return this.service.ref(path).put(file, metadata);
   }
 }

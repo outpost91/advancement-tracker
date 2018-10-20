@@ -7,9 +7,9 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 
 export class AuthService {
-  public service: firebase.auth.Auth;
-  public session: any;
-  public fetch_options = {
+  service: firebase.auth.Auth;
+  session: any;
+  fetch_options = {
       method: '',
       headers: { 'Authorization': '' },
       mode: 'cors'

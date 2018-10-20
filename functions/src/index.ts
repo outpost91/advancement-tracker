@@ -43,8 +43,8 @@ const app = express();
 app.use(cors({ origin: true }));
 //app.use(favicon('./public/favicon.ico'));
 app.use(cookieParser());
-//app.use(validateFirebaseIdToken);
-//app.use(userAccessGranted);
+app.use(validateFirebaseIdToken);
+app.use(userAccessGranted);
 
 //API routes
 app.route('/getPeople')

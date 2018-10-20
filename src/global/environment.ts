@@ -1,7 +1,7 @@
 export default {
     app: {
-        url: "http://localhost:3245",
-        apiUrl: "http://localhost:3001/ranger-tracker.firebaseapp.com"
+        url: "https://ranger-tracker.firebaseapp.com",
+        apiUrl: "https://us-central1-ranger-tracker.cloudfunctions.net/api"
     },
     // Initialize Firebase
     firebase: {
@@ -12,5 +12,4 @@ export default {
         storageBucket: "ranger-tracker.appspot.com",
         messagingSenderId: "223391310397"
     }
-    
-}
+};

@@ -23,7 +23,8 @@
     "firebase-functions": "^2.0.5",
     "googleapis": "^34.0.0",
     "node-fetch": "^2.2.0",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "workbox-sw": "^3.6.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",

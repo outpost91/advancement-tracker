@@ -6,10 +6,10 @@
 
 import '@stencil/core';
 
-import '@stencil/router';
-import '@stencil/state-tunnel';
 import '@ionic/core';
+import '@stencil/router';
 import 'ionicons';
+import '@stencil/state-tunnel';
 import {
   AuthService,
 } from './services/auth';

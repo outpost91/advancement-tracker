@@ -27,7 +27,7 @@ exports.BreezeError = BreezeError;
 const _request_succeeded = (response) => {
     /* Predicate to ensure that the HTTP request succeeded.
     */
-    return !((typeof response !== 'boolean') && (('error' in response) || ('errorCode' in response)));
+    return !(response && (typeof response !== 'boolean') && (('error' in response) || ('errorCode' in response)));
 };
 const _request = (state) => ({
     request: (endpoint, optionalObj) => {
@@ -43,17 +43,18 @@ const _request = (state) => ({
         */
         console.log("request", endpoint);
         const url = state.breeze_url + endpoint;
-        console.log('Making async request to %s', url);
         if (!state.dry_run) {
             const options = {
-                method: 'GET',
+                method: "GET",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Api-Key': state.api_key
+                    "Content-Type": "application/json",
+                    "Api-Key": state.api_key
                 },
                 timeout: ((optionalObj !== undefined && optionalObj.timeout !== undefined) ? optionalObj.timeout : 30) * 1000,
-                mode: 'cors'
+                mode: "cors"
             };
+            console.log('Making async request to', url);
+            console.log('with request options', options);
             return node_fetch_1.default(url, options)
                 .then(res => {
                 console.log(res);
@@ -62,12 +63,14 @@ const _request = (state) => ({
                 .then(data => {
                 console.log(data);
                 if (!_request_succeeded(data)) {
+                    console.log(data);
                     return node_fetch_1.default.Promise.reject(new BreezeError(data));
                 }
                 return node_fetch_1.default.Promise.resolve(data);
             })
                 .catch(error => {
-                return node_fetch_1.default.Promise.reject(new BreezeError(error));
+                console.log(error);
+                return node_fetch_1.default.Promise.reject(new BreezeError(error || ''));
             });
         }
         return node_fetch_1.default.Promise.resolve({});

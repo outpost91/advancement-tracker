@@ -11,12 +11,12 @@ export class DatabaseService {
   watchers: any = {};
   options: any;
   photoURLBase: string;
-  dbURLBase: string;
+  functionURLBase: string;
 
   constructor() {
     this.service = firebase.database().ref();
     this.photoURLBase = 'https://files.breezechms.com/';
-    this.dbURLBase = 'https://ranger-tracker.firebaseapp.com';
+    this.functionURLBase = 'https://us-central1-ranger-tracker.cloudfunctions.net/api';
   }
 
   fetch_options(options: any) {
@@ -63,6 +63,21 @@ export class DatabaseService {
     return this.merits(group, 'skill');
   }
 
+  async getAttendance() {
+    return this.service.child('rangers')
+        .once('value')
+        .then(snapshot => {
+          // Need an object with the (key of the snapshot as id), last_name, force_first_name, path (where path is url to image)
+          const snapdata = [];
+          snapshot.forEach(childsnapshot => {
+            snapdata.push({ id: childsnapshot.key, 'last_name': childsnap.child('lastName').val(), 'force_first_name': childsnap.child('firstName').val()});
+          });
+
+          return snapdata;
+        })
+        .catch(_ => []);
+  }
+
   async requirements(key: string) {
     return this.service.child('merits/' + key)
         .once('value')
@@ -72,22 +87,23 @@ export class DatabaseService {
                 return parseInt(snapshot.child('num-reqs').val(), 10);
             }
         })
-        .catch(_ => {
-            return 0;
-        });
+        .catch(_ => 0);
   }
 
   async call(functionName: string, payload: any = {}) {
     return firebase.functions().httpsCallable(functionName)(payload);
   }
 
+  // Breeze interaction not working
+  // Possibly CORS issue
   async fetch(baseUrl: string, params: {}) {
     const paramsList = [];
     for (const x in params) {
         paramsList.push(x.concat('=', params[x]));
     }
+    console.log(this.options);
 
-    return fetch(this.dbURLBase.concat(baseUrl, '?', paramsList.join('&')), this.options);
+    return fetch(this.functionURLBase.concat(baseUrl, '?', paramsList.join('&')), this.options);
   }
 
   async fetch_attendance(params: {
